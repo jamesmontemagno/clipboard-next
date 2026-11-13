@@ -11,7 +11,7 @@ It is distributed **only through the Microsoft Store**, as a packaged (MSIX) app
 - **Tray icon.** Click it (either button) for the quick popup: status, the current and next snippet, **Back / Start · Pause · Resume / Next**, the floating badge toggle, **Open editor**, and **Exit**. A green dot on the icon marks a running queue, the tooltip shows progress such as `3 of 12`, and the icon flashes a checkmark when a paste is detected.
 - **Editor.** Opens on a normal launch and from the tray. Add, edit, delete, and reorder snippets; **Start here** begins from the selected one; **Import** turns Markdown or plain text into snippets. Closing the editor keeps the app running in the tray.
 - **Paste detection** is off until you turn it on (in the editor's notice bar, the tray popup, or **Settings**). Then each **Ctrl+V** copies the next snippet after the **Next after** delay (0.10–3.00 s, default 0.35 s). Turn on **Terminal paste shortcuts** in Settings to also count **Ctrl+Shift+V** and **Shift+Insert**.
-- **Floating badge.** An optional always-on-top `3/12` badge that never takes keyboard focus. Drag it anywhere on any display; **Reset position** puts it back in the top-right corner, and it returns there by itself if its display is unplugged.
+- **Floating badge.** An optional always-on-top badge showing the current snippet's title and progress, such as `Seed demo data · 3/12`, without taking keyboard focus. Untitled snippets and queues that haven't started keep the compact progress-only badge. Long titles use an ellipsis; hover for the full title. Titles are labels and are never copied. Drag it anywhere on any display; **Reset position** puts it back in the top-right corner, and it returns there by itself if its display is unplugged.
 - **Start with Windows** (Settings) starts the app quietly in the tray at sign-in.
 
 If another app changes the clipboard, the queue pauses and leaves that content alone; **Resume** copies the current snippet again. Commands are copied as plain text, never executed, and the app never presses Enter.
@@ -97,6 +97,8 @@ dotnet test windows/tests/ClipboardNext.Core.Tests/ClipboardNext.Core.Tests.cspr
 ```
 
 Start the app through `dotnet run` or Visual Studio's **Package** profile rather than by double-clicking the built `.exe`: it is a packaged app and expects package identity.
+
+For manual sparse debug registrations, include the build's `resources.pri` and assets in the registered package layout. Without that resource index, Toolkit settings cards can render only their controls, with no headers or descriptions, even though the app builds successfully.
 
 The tests cover Markdown and plain-text import and queue behavior with a fake clipboard and deterministic deferred callbacks (repeated keys, canceled work, external copies, final-item behavior, persistence protection, and reading the macOS file format), plus the Windows-only rules: which shortcuts count as a paste, badge placement across displays, and settings, including the remembered import format.
 

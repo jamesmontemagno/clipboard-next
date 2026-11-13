@@ -258,6 +258,87 @@ final class QueueTests: XCTestCase {
     }
 
     @MainActor
+    func testBadgeTitleFollowsImportedCurrentSnippetThroughTransportAndCompletion() async throws {
+        let (queue, clipboard, scheduler, _) = fixture()
+        let markdown = """
+        # Seed demo data
+        ```sh
+        seed-demo
+        ```
+        # Show results
+        ```sh
+        show-results
+        ```
+        """
+        queue.update(try MarkdownImport.parse(markdown, wholeBlocks: false).map(\.snippet))
+        XCTAssertEqual(BadgePresentation(queue: queue).text, "0/2")
+        queue.start()
+        XCTAssertEqual(BadgePresentation(queue: queue).text, "Seed demo data · 1/2")
+        XCTAssertEqual(clipboard.text, "seed-demo")
+        paste(queue)
+        XCTAssertEqual(BadgePresentation(queue: queue).title, "Seed demo data")
+        scheduler.fire()
+        XCTAssertEqual(BadgePresentation(queue: queue).text, "Show results · 2/2")
+        XCTAssertEqual(clipboard.text, "show-results")
+
+        queue.pause()
+        XCTAssertEqual(BadgePresentation(queue: queue).title, "Show results")
+        queue.manualPrevious()
+        XCTAssertEqual(BadgePresentation(queue: queue).title, "Seed demo data")
+        queue.resume()
+        XCTAssertEqual(BadgePresentation(queue: queue).title, "Seed demo data")
+        queue.manualNext()
+        queue.manualNext()
+        XCTAssertEqual(queue.status, .finished)
+        XCTAssertEqual(BadgePresentation(queue: queue).text, "Show results · 2/2")
+        queue.start(at: queue.snippets[1].id)
+        XCTAssertEqual(BadgePresentation(queue: queue).text, "Show results · 2/2")
+    }
+
+    @MainActor
+    func testBadgeWithoutTitleNeverFallsBackToCommandText() async {
+        let (queue, _, _, _) = fixture()
+        for title in ["", " \t\r\n "] {
+            queue.pause()
+            queue.update([Snippet(title: title, text: "command-not-for-the-badge")])
+            queue.start()
+            XCTAssertEqual(BadgePresentation(queue: queue).title, "")
+            XCTAssertEqual(BadgePresentation(queue: queue).text, "1/1")
+        }
+        queue.pause()
+        queue.update([])
+        XCTAssertEqual(BadgePresentation(queue: queue).text, "0/0")
+    }
+
+    @MainActor
+    func testBadgeNormalizesTitleWithoutTruncatingOrChangingStoredContent() async {
+        let (queue, clipboard, scheduler, url) = fixture()
+        let words = Array(repeating: "Seed \u{6570}\u{636e} demo", count: 30).joined(separator: " ")
+        let title = " \t\(words)\r\n  show\tresults "
+        queue.update([Snippet(title: title, text: "seed-demo")])
+        queue.start()
+        XCTAssertEqual(BadgePresentation(queue: queue).title, "\(words) show results")
+        XCTAssertEqual(queue.current?.title, title)
+        let restored = DemoQueue(clipboard: FakeClipboard(), storageURL: url, schedule: scheduler.schedule)
+        XCTAssertEqual(restored.snippets[0].title, title)
+        XCTAssertEqual(clipboard.text, "seed-demo")
+    }
+
+    @MainActor
+    func testBadgeExpansionStaysOnItsDisplayWithoutMovingItsTopEdge() {
+        let workArea = NSRect(x: 1920, y: -200, width: 2560, height: 1400)
+        let frame = NSRect(x: 4356, y: 1168, width: 104, height: 32)
+        let expanded = FloatingBadge.resizedFrame(frame, width: 246, within: workArea)
+        XCTAssertEqual(expanded.minX, 4234)
+        XCTAssertEqual(expanded.maxY, frame.maxY)
+        XCTAssertTrue(workArea.contains(expanded))
+
+        let centered = NSRect(x: 2400, y: 500, width: 104, height: 32)
+        let resized = FloatingBadge.resizedFrame(centered, width: 246, within: workArea)
+        XCTAssertEqual(resized.origin, centered.origin)
+    }
+
+    @MainActor
     func testPreviouslySavedTitledQueueRetainsCommandText() async throws {
         let (_, clipboard, scheduler, url) = fixture()
         let oldJSON = """

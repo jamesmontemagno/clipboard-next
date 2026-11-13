@@ -33,6 +33,9 @@ public static class QueuePresentation
     public static string BadgeText(DemoQueue queue) =>
         $"{(queue.Index is { } index ? index + 1 : 0)}/{queue.Snippets.Count}";
 
+    public static string BadgeTitle(DemoQueue queue) =>
+        string.Join(" ", (queue.Current?.Title ?? "").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+
     /// <summary>The tray icon's tooltip: progress while running, otherwise the status.</summary>
     public static string TrayToolTip(DemoQueue queue) => queue.Status == QueueStatus.Running
         ? $"{AppName} · {queue.Progress}"
