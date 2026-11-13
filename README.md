@@ -82,7 +82,7 @@ It restores without arming the queue or changing the clipboard. Save/load errors
 
 Releases follow the tiny-clips pattern. Pushing a tag like `v1.0.0-mac` (or running **Release** via workflow dispatch) triggers [`.github/workflows/release.yml`](.github/workflows/release.yml). It runs the tests, archives a universal build, signs it with Developer ID, notarizes and staples it, and publishes `ClipboardNext-v1.0.0-mac.zip` to GitHub Releases. It then opens a PR that updates the version and SHA-256 in [`Casks/clipboard-next.rb`](Casks/clipboard-next.rb). This repo is its own Homebrew tap. Merge that PR before announcing; until the first release, the cask's SHA is a placeholder.
 
-Required repository secrets (same as tiny-clips): `DEVELOPER_ID_CERTIFICATE_BASE64`, `DEVELOPER_ID_CERTIFICATE_PASSWORD`, `KEYCHAIN_PASSWORD`, `APPLE_TEAM_ID`, `APPLE_ID`, `APP_PASSWORD`. Allow GitHub Actions to create pull requests in repository settings.
+Required repository secrets: `APPLE_MACOS_DIRECT_CERTIFICATE_P12` (base64-encoded Developer ID Application `.p12`), `APPLE_MACOS_DIRECT_CERTIFICATE_PASSWORD`, `APPLE_REFRACTORED_KEY_ID`, `APPLE_REFRACTORED_ISSUER_ID`, and `APPLE_REFRACTORED_P8_KEY` (the App Store Connect API private key). The workflow generates a temporary keychain password; the Apple team ID is already configured in the Xcode project. The installer certificate secrets are not needed because the release is a ZIP containing the signed app, not a `.pkg`. Allow GitHub Actions to create pull requests in repository settings.
 
 [`.github/workflows/build.yml`](.github/workflows/build.yml) builds and tests every push and PR (ad-hoc signed, no secrets).
 

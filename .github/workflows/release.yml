@@ -14,6 +14,7 @@ on:
 env:
   SCHEME: ClipboardNext
   PRODUCT_NAME: ClipboardNext
+  APPLE_TEAM_ID: 8P95D2238B
 
 permissions:
   contents: write
@@ -62,12 +63,12 @@ jobs:
 
       - name: Install Apple Developer ID certificate
         env:
-          DEVELOPER_ID_CERTIFICATE_BASE64: ${{ secrets.DEVELOPER_ID_CERTIFICATE_BASE64 }}
-          DEVELOPER_ID_CERTIFICATE_PASSWORD: ${{ secrets.DEVELOPER_ID_CERTIFICATE_PASSWORD }}
-          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          DEVELOPER_ID_CERTIFICATE_BASE64: ${{ secrets.APPLE_MACOS_DIRECT_CERTIFICATE_P12 }}
+          DEVELOPER_ID_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_MACOS_DIRECT_CERTIFICATE_PASSWORD }}
         run: |
           CERTIFICATE_PATH=$RUNNER_TEMP/certificate.p12
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          KEYCHAIN_PASSWORD=$(openssl rand -hex 32)
 
           echo -n "$DEVELOPER_ID_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
 
@@ -82,8 +83,6 @@ jobs:
           security find-identity -v -p codesigning $KEYCHAIN_PATH
 
       - name: Build and Archive (universal)
-        env:
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           xcodebuild archive \
             -project ${{ env.SCHEME }}.xcodeproj \
@@ -100,8 +99,6 @@ jobs:
             OTHER_CODE_SIGN_FLAGS="--timestamp --options=runtime"
 
       - name: Export Archive
-        env:
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           cat > $RUNNER_TEMP/ExportOptions.plist << EOF
           <?xml version="1.0" encoding="UTF-8"?>
@@ -124,18 +121,22 @@ jobs:
 
       - name: Notarize App
         env:
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_NOTARY_KEY_ID: ${{ secrets.APPLE_REFRACTORED_KEY_ID }}
+          APPLE_NOTARY_ISSUER_ID: ${{ secrets.APPLE_REFRACTORED_ISSUER_ID }}
+          APPLE_NOTARY_KEY: ${{ secrets.APPLE_REFRACTORED_P8_KEY }}
         run: |
+          NOTARY_KEY_PATH="$RUNNER_TEMP/AuthKey_${APPLE_NOTARY_KEY_ID}.p8"
+          printf '%s' "$APPLE_NOTARY_KEY" > "$NOTARY_KEY_PATH"
+          chmod 600 "$NOTARY_KEY_PATH"
+
           ditto -c -k --sequesterRsrc --keepParent \
             "$RUNNER_TEMP/Export/${{ env.PRODUCT_NAME }}.app" \
             "$RUNNER_TEMP/${{ env.PRODUCT_NAME }}-notarize.zip"
 
           SUBMISSION_OUTPUT=$(xcrun notarytool submit "$RUNNER_TEMP/${{ env.PRODUCT_NAME }}-notarize.zip" \
-            --apple-id "$APPLE_ID" \
-            --password "$APP_PASSWORD" \
-            --team-id "$APPLE_TEAM_ID" \
+            --key "$NOTARY_KEY_PATH" \
+            --key-id "$APPLE_NOTARY_KEY_ID" \
+            --issuer "$APPLE_NOTARY_ISSUER_ID" \
             --wait \
             --output-format json)
 
@@ -146,9 +147,9 @@ jobs:
           if [ "$STATUS" != "Accepted" ]; then
             echo "Notarization failed with status: $STATUS"
             xcrun notarytool log "$SUBMISSION_ID" \
-              --apple-id "$APPLE_ID" \
-              --password "$APP_PASSWORD" \
-              --team-id "$APPLE_TEAM_ID"
+              --key "$NOTARY_KEY_PATH" \
+              --key-id "$APPLE_NOTARY_KEY_ID" \
+              --issuer "$APPLE_NOTARY_ISSUER_ID"
             exit 1
           fi
 
