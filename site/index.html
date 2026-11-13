@@ -34,7 +34,7 @@
         <p class="lede">Clipboard Next is a tiny macOS menu bar app that queues your demo commands and prompts. Every <kbd>⌘</kbd><kbd>V</kbd> loads the next one, so you never alt-tab back to your notes on stage.</p>
         <div class="cta">
           <a class="btn primary" href="#download">Get it for macOS</a>
-          <button class="btn ghost copy" type="button" data-copy="brew tap jamesmontemagno/clipboard-next https://github.com/jamesmontemagno/clipboard-next && brew install --cask clipboard-next">
+          <button class="btn ghost copy" type="button" data-copy="brew tap jamesmontemagno/clipboard-next https://github.com/jamesmontemagno/clipboard-next && brew trust jamesmontemagno/clipboard-next && brew install --cask clipboard-next">
             <code>brew install --cask clipboard-next</code><span class="copy-label">Copy</span>
           </button>
         </div>
@@ -113,8 +113,9 @@
           <p>Install with Homebrew:</p>
           <div class="codeblock">
             <pre><code>brew tap jamesmontemagno/clipboard-next https://github.com/jamesmontemagno/clipboard-next
+brew trust jamesmontemagno/clipboard-next
 brew install --cask clipboard-next</code></pre>
-            <button class="btn small copy" type="button" data-copy="brew tap jamesmontemagno/clipboard-next https://github.com/jamesmontemagno/clipboard-next&#10;brew install --cask clipboard-next"><span class="copy-label">Copy</span></button>
+            <button class="btn small copy" type="button" data-copy="brew tap jamesmontemagno/clipboard-next https://github.com/jamesmontemagno/clipboard-next&#10;brew trust jamesmontemagno/clipboard-next&#10;brew install --cask clipboard-next"><span class="copy-label">Copy</span></button>
           </div>
           <p>Or download the signed, notarized app from <a href="https://github.com/jamesmontemagno/clipboard-next/releases/latest">GitHub Releases</a>.</p>
           <p class="fine">Requires macOS 14 Sonoma or later. For automatic advancing, allow Clipboard Next under <em>Privacy &amp; Security → Input Monitoring</em>.</p>

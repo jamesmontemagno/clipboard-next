@@ -8,6 +8,7 @@ Website: <https://clipboardnext.com/> · A Windows version is planned.
 
 ```sh
 brew tap jamesmontemagno/clipboard-next https://github.com/jamesmontemagno/clipboard-next
+brew trust jamesmontemagno/clipboard-next
 brew install --cask clipboard-next
 ```
 

@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clipboard Next — Launch Trailer</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d0f1a;
+      --panel: #171b2d;
+      --line: #2b304b;
+      --text: #f5f6ff;
+      --muted: #9ca3c7;
+      --purple: #8567ff;
+      --mint: #36d8b5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 74% 48%, rgb(91 73 195 / 24%), transparent 36%),
+        radial-gradient(ellipse at 20% 82%, rgb(34 195 166 / 12%), transparent 35%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    .film {
+      position: relative;
+      display: grid;
+      width: 100%;
+      height: 100%;
+      place-items: center;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .film::before,
+    .film::after {
+      position: absolute;
+      z-index: -1;
+      border: 1px solid rgb(255 255 255 / 5%);
+      border-radius: 50%;
+      content: "";
+      animation: orbit 24s linear infinite;
+    }
+
+    .film::before { width: 78vw; aspect-ratio: 1; }
+    .film::after { width: 54vw; aspect-ratio: 1; animation-direction: reverse; }
+
+    .grain {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      opacity: .14;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+    }
+
+    .brand {
+      position: absolute;
+      top: 5.3%;
+      left: 6.5%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: clamp(17px, 1.4vw, 26px);
+      font-weight: 720;
+      letter-spacing: -.03em;
+      animation: settle-in .7s both;
+    }
+
+    .brand img { width: clamp(32px, 2.5vw, 48px); height: auto; }
+    .brand span { opacity: .92; }
+
+    .intro, .demo, .outro {
+      position: absolute;
+      width: 100%;
+      padding: 0 7%;
+      text-align: center;
+    }
+
+    .intro {
+      top: 27%;
+      animation: intro 4.6s both;
+    }
+
+    .eyebrow {
+      margin: 0 0 22px;
+      color: var(--mint);
+      font-size: clamp(13px, 1.05vw, 20px);
+      font-weight: 750;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 1300px;
+      margin: 0 auto;
+      font-size: clamp(48px, 7.7vw, 148px);
+      line-height: .96;
+      letter-spacing: -.075em;
+    }
+
+    .gradient {
+      display: block;
+      background: linear-gradient(100deg, #a18dff 10%, #52debf 92%);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .intro p:last-child {
+      margin: 30px 0 0;
+      color: var(--muted);
+      font-size: clamp(16px, 1.55vw, 29px);
+    }
+
+    .demo {
+      top: 19%;
+      display: grid;
+      grid-template-columns: 1.13fr .87fr;
+      align-items: center;
+      row-gap: 7%;
+      column-gap: 4.2%;
+      width: 88%;
+      max-width: 1640px;
+      margin: 0 auto;
+      padding: 0;
+      text-align: left;
+      opacity: 0;
+      animation: demo 10.7s 3.15s both;
+    }
+
+    .demo-copy {
+      grid-column: 1 / -1;
+      margin-bottom: 0;
+      text-align: center;
+      animation: demo-copy 10.7s 3.15s both;
+    }
+
+    .demo-copy .eyebrow { margin-bottom: 12px; }
+    .demo-copy h2 {
+      margin: 0;
+      font-size: clamp(30px, 3.1vw, 60px);
+      letter-spacing: -.055em;
+    }
+
+    .app-window {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgb(255 255 255 / 11%);
+      border-radius: 22px;
+      background: rgb(20 23 39 / 94%);
+      box-shadow: 0 36px 100px rgb(0 0 0 / 45%), 0 0 70px rgb(124 92 255 / 10%);
+    }
+
+    .bar {
+      display: flex;
+      height: 54px;
+      align-items: center;
+      gap: 8px;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #ff625a; }
+    .dot:nth-child(2) { background: #ffbd4a; }
+    .dot:nth-child(3) { background: #35c96f; }
+    .bar-title { margin-left: 9px; }
+
+    .terminal {
+      min-height: 344px;
+      padding: 24px 27px 30px;
+      background: #0b0d16;
+      font: 500 clamp(14px, 1.15vw, 21px)/1.9 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .terminal-line {
+      display: block;
+      min-height: 1.9em;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: type-line .45s both;
+    }
+
+    .terminal-line:nth-child(1) { animation-delay: 4.9s; }
+    .terminal-line:nth-child(2) { animation-delay: 7.05s; }
+    .terminal-line:nth-child(3) { animation-delay: 9.2s; }
+    .terminal-line:nth-child(4) { animation-delay: 11.35s; }
+    .prompt { color: #a18dff; }
+    .command { color: #d7ffe9; }
+    .comment { color: #7d85a7; }
+
+    .queue-list {
+      display: grid;
+      gap: 13px;
+      padding: 24px;
+    }
+
+    .snippet {
+      display: flex;
+      min-height: 76px;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 16px;
+      border: 1px solid transparent;
+      border-radius: 13px;
+      color: #a4abc9;
+      font: 500 clamp(13px, 1.05vw, 18px)/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+      opacity: .62;
+      animation: select-step 8.7s 4.6s both;
+    }
+
+    .snippet:nth-child(2) { animation-delay: 6.7s; }
+    .snippet:nth-child(3) { animation-delay: 8.85s; }
+    .snippet:nth-child(4) { animation-delay: 11s; }
+
+    .number {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      color: #8d95b7;
+      font: 700 14px/1 ui-monospace, monospace;
+    }
+
+    .badge {
+      position: absolute;
+      top: 13%;
+      right: 8%;
+      width: 124px;
+      height: 54px;
+      border: 1px solid rgb(255 255 255 / 20%);
+      border-radius: 99px;
+      background: #20243a;
+      box-shadow: 0 14px 34px rgb(0 0 0 / 40%);
+      opacity: 0;
+      animation: badge-pop 10.7s 3.15s both;
+    }
+
+    .badge::before {
+      position: absolute;
+      top: 50%;
+      left: 20px;
+      color: var(--mint);
+      content: "⌘";
+      font: 700 20px -apple-system, sans-serif;
+      transform: translateY(-50%);
+    }
+
+    .badge-count {
+      position: absolute;
+      top: 50%;
+      right: 18px;
+      color: var(--text);
+      font: 750 18px ui-monospace, monospace;
+      opacity: 0;
+      animation: count-step 1.8s both;
+    }
+
+    .count-one { animation-delay: 4.6s; }
+    .count-two { animation-delay: 6.7s; }
+    .count-three { animation-delay: 8.85s; }
+    .count-four { animation-delay: 11s; }
+
+    .outro {
+      top: 29%;
+      opacity: 0;
+      animation: outro 4.2s 12.7s both;
+    }
+
+    .outro img {
+      width: clamp(66px, 6vw, 112px);
+      margin-bottom: 24px;
+      filter: drop-shadow(0 16px 40px rgb(124 92 255 / 35%));
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .outro h2 {
+      margin: 0;
+      font-size: clamp(58px, 9.5vw, 172px);
+      line-height: .93;
+      letter-spacing: -.08em;
+    }
+
+    .outro .tagline {
+      margin: 28px 0 0;
+      color: #c0c5de;
+      font-size: clamp(18px, 2vw, 36px);
+    }
+
+    .url {
+      position: absolute;
+      right: 6.5%;
+      bottom: 5.2%;
+      color: #9fa6c7;
+      font-size: clamp(14px, 1.15vw, 21px);
+      letter-spacing: .04em;
+      animation: settle-in .7s .3s both;
+    }
+
+    @keyframes orbit { to { transform: rotate(360deg); } }
+    @keyframes settle-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+    @keyframes intro {
+      0% { opacity: 0; transform: translateY(24px) scale(.97); }
+      12%, 78% { opacity: 1; transform: none; }
+      100% { opacity: 0; transform: translateY(-18px) scale(1.02); }
+    }
+    @keyframes demo {
+      0%, 8% { opacity: 0; transform: translateY(22px) scale(.985); }
+      18%, 78% { opacity: 1; transform: none; }
+      100% { opacity: 0; transform: translateY(-18px) scale(1.015); }
+    }
+    @keyframes demo-copy {
+      0%, 9% { opacity: 0; transform: translateY(14px); }
+      19%, 74% { opacity: 1; transform: none; }
+      100% { opacity: 0; transform: translateY(-10px); }
+    }
+    @keyframes type-line {
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes select-step {
+      0%, 15% { opacity: .48; border-color: transparent; background: transparent; transform: translateX(0); }
+      25%, 68% { opacity: 1; border-color: rgb(54 216 181 / 45%); background: rgb(54 216 181 / 9%); transform: translateX(4px); }
+      78%, 100% { opacity: .45; border-color: transparent; background: transparent; transform: translateX(0); }
+    }
+    @keyframes badge-pop {
+      0%, 8% { opacity: 0; transform: translateY(12px) scale(.88); }
+      18%, 90% { opacity: 1; transform: none; }
+      100% { opacity: 0; transform: translateY(-6px) scale(.96); }
+    }
+    @keyframes count-step {
+      0%, 12% { opacity: 0; transform: translateY(calc(-50% + 8px)); }
+      20%, 80% { opacity: 1; transform: translateY(-50%); }
+      100% { opacity: 0; transform: translateY(calc(-50% - 8px)); }
+    }
+    @keyframes outro {
+      0%, 8% { opacity: 0; transform: translateY(25px) scale(.97); }
+      20%, 78% { opacity: 1; transform: none; }
+      100% { opacity: 1; transform: none; }
+    }
+    @keyframes float { 50% { transform: translateY(-8px) rotate(-3deg); } }
+
+    @media (max-aspect-ratio: 4/3) {
+      .demo { width: 92%; grid-template-columns: 1fr 1fr; gap: 3%; }
+      .terminal { min-height: 300px; padding: 18px; }
+      .queue-list { gap: 7px; padding: 15px; }
+      .snippet { min-height: 66px; padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="film" aria-label="Clipboard Next launch trailer">
+    <div class="grain"></div>
+    <div class="brand"><img src="assets/logo.svg" alt=""><span>Clipboard Next</span></div>
+
+    <section class="intro">
+      <p class="eyebrow">For the moments that matter</p>
+      <h1>Stay in the demo.<span class="gradient">Not in your notes.</span></h1>
+      <p>Your next command is already waiting.</p>
+    </section>
+
+    <section class="demo" aria-label="A queue of demo commands advancing after each paste">
+      <div class="demo-copy">
+        <p class="eyebrow">One paste. One step forward.</p>
+        <h2>Present with your flow intact.</h2>
+      </div>
+      <div class="app-window">
+        <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="bar-title">Terminal · TheaterLog demo</span></div>
+        <div class="terminal">
+          <span class="terminal-line"><b class="prompt">❯</b> <span class="command">maui devflow list</span></span>
+          <span class="terminal-line"><b class="prompt">❯</b> <span class="command">maui devflow ui tree --depth 4</span></span>
+          <span class="terminal-line"><b class="prompt">❯</b> <span class="command">maui devflow ui tap --automationId OpenSettings</span></span>
+          <span class="terminal-line"><b class="prompt">❯</b> <span class="comment">✓ Next command ready</span></span>
+        </div>
+      </div>
+      <div class="app-window">
+        <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="bar-title">Your demo queue</span></div>
+        <div class="queue-list">
+          <div class="snippet"><span class="number">1</span><span>maui devflow list</span></div>
+          <div class="snippet"><span class="number">2</span><span>ui tree --depth 4</span></div>
+          <div class="snippet"><span class="number">3</span><span>tap OpenSettings</span></div>
+          <div class="snippet"><span class="number">4</span><span>verify settings screen</span></div>
+        </div>
+      </div>
+    </section>
+    <div class="badge" aria-hidden="true">
+      <span class="badge-count count-one">1/4</span>
+      <span class="badge-count count-two">2/4</span>
+      <span class="badge-count count-three">3/4</span>
+      <span class="badge-count count-four">4/4</span>
+    </div>
+
+    <section class="outro">
+      <img src="assets/logo.svg" alt="">
+      <h2>Clipboard <span class="gradient">Next.</span></h2>
+      <p class="tagline">Prep once. Paste. Keep the room with you.</p>
+    </section>
+
+    <div class="url">clipboardnext.com</div>
+  </main>
+</body>
+</html>
