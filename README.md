@@ -15,7 +15,9 @@ Or download the notarized zip from [GitHub Releases](https://github.com/jamesmon
 
 ## Run from source
 
-Requires macOS 14+ and Xcode 16+.
+Requires macOS 14+ and Xcode 26+.
+
+The app icon is maintained in [`ClipboardNext/AppIcon.icon`](ClipboardNext/AppIcon.icon) with Icon Composer. Xcode generates the icon for older supported macOS releases at build time.
 
 Open `ClipboardNext.xcodeproj`, choose the **ClipboardNext** scheme and **My Mac**, and Run. No external packages are needed. The app target signs with the `Apple Development` identity for team `8P95D2238B`, so Input Monitoring approval survives rebuilds. Contributors without that team can build ad hoc by appending `CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM=` to `xcodebuild`.
 

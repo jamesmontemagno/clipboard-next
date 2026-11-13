@@ -1,0 +1,88 @@
+{
+  "fill" : {
+    "linear-gradient" : [
+      "srgb:0.48627,0.36078,1.00000,1.00000",
+      "srgb:0.13333,0.76471,0.65098,1.00000"
+    ]
+  },
+  "groups" : [
+    {
+      "name" : "Next arrow",
+      "layers" : [
+        {
+          "image-name" : "06-arrow.svg",
+          "name" : "Next arrow"
+        }
+      ],
+      "shadow" : {
+        "kind" : "none",
+        "opacity" : 0
+      }
+    },
+    {
+      "name" : "Next badge",
+      "layers" : [
+        {
+          "image-name" : "05-badge.svg",
+          "name" : "Next badge"
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.3
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.1
+      }
+    },
+    {
+      "name" : "Clipboard",
+      "layers" : [
+        {
+          "image-name" : "04-lines.svg",
+          "name" : "Snippet lines"
+        },
+        {
+          "image-name" : "03-clip.svg",
+          "name" : "Clip"
+        },
+        {
+          "image-name" : "02-clipboard.svg",
+          "name" : "Clipboard"
+        }
+      ],
+      "lighting" : "individual",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.25
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.1
+      }
+    },
+    {
+      "name" : "Queued sheet",
+      "layers" : [
+        {
+          "image-name" : "01-queued-sheet.svg",
+          "name" : "Queued sheet"
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.2
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.15
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : [
+      "macOS"
+    ]
+  }
+}
