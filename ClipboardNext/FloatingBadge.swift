@@ -86,21 +86,21 @@ final class FloatingBadge {
             y: screen.visibleFrame.maxY - panel.frame.height - 20))
     }
 
-    struct BadgePresentation {
-        let title: String
-        let position: String
-        var width: CGFloat { title.isEmpty ? 104 : 246 }
-        var text: String { title.isEmpty ? position : "\(title) · \(position)" }
-
-        @MainActor
-        init(queue: DemoQueue) {
-            title = (queue.current?.title ?? "").split(whereSeparator: \.isWhitespace).joined(separator: " ")
-            position = queue.index.map { "\($0 + 1)/\(queue.snippets.count)" } ?? "0/\(queue.snippets.count)"
-        }
-    }
-
     private static func isOnScreen(_ frame: NSRect) -> Bool {
         NSScreen.screens.contains { $0.visibleFrame.intersects(frame) }
+    }
+}
+
+struct BadgePresentation {
+    let title: String
+    let position: String
+    var width: CGFloat { title.isEmpty ? 104 : 246 }
+    var text: String { title.isEmpty ? position : "\(title) · \(position)" }
+
+    @MainActor
+    init(queue: DemoQueue) {
+        title = (queue.current?.title ?? "").split(whereSeparator: \.isWhitespace).joined(separator: " ")
+        position = queue.index.map { "\($0 + 1)/\(queue.snippets.count)" } ?? "0/\(queue.snippets.count)"
     }
 }
 
