@@ -1,0 +1,6 @@
+{
+  "advanceDelayMilliseconds": 350,
+  "showFloatingBadge": true,
+  "pasteDetectionEnabled": true,
+  "detectTerminalPasteShortcuts": false
+}

@@ -4,7 +4,7 @@ A native Windows port of [Clipboard Next](../README.md): a WinUI 3 app that live
 
 It is distributed **only through the Microsoft Store**, as a packaged (MSIX) app. There is no direct download, sideload, or winget flavor: the Store signs the package and delivers updates.
 
-> **Status: work in progress.** The core logic is ported and covered by tests. The WinUI app's code has been type-checked against the Windows App SDK, but it has not yet been built, run, or submitted to the Store from a Windows machine. See [What still needs a Windows machine](#what-still-needs-a-windows-machine).
+> **Status: preparing for the Microsoft Store.** The native app runs on Windows, and the Store screenshot set is captured from the real WinUI app. Store certification and release validation are still required; see [What still needs a Windows machine](#what-still-needs-a-windows-machine).
 
 ## Using it
 
@@ -133,11 +133,14 @@ python windows/tools/generate-icons.py
 
 See [`docs/microsoft-store-listing.md`](docs/microsoft-store-listing.md) for the listing copy, the first submission, and the one-time setup, and [`packaging/README.md`](packaging/README.md) for how the upload is built and verified.
 
+- [Partner Center secret and variable setup](docs/partner-center-setup.md): the four `microsoft-store` environment secrets, two repository variables, portal locations, approvals, and safe diagnostics.
+- [Three Store screenshots and capture instructions](docs/store-assets/README.md): real queue, Markdown import, and presenting views, prefilled with WinUI examples.
+
 ## What still needs a Windows machine
 
-This port was started on Linux, where WinUI 3 cannot be built or run. Before the first Store submission:
+The port started on Linux and now runs on Windows. Before the first Store submission:
 
 1. Let `windows-build.yml` compile and package the app, and fix whatever the XAML compiler reports.
 2. Run the app and walk through the live check above, the tray popup, the badge on a second display, and both light and dark themes.
 3. Reserve **Clipboard Next** in Partner Center and confirm the package identity in `Package.appxmanifest` matches.
-4. Capture the Store screenshots.
+4. Review the [three Store screenshots](docs/store-assets/README.md) against the release candidate and re-capture after any UI changes.

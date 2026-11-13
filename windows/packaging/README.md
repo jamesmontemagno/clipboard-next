@@ -51,7 +51,7 @@ Submit the complete `.msixupload`, not just its `.msixbundle`, to keep the symbo
 
 Nothing reaches the public Store without the same upload first going to Internal Testing. A manual run can also package without publishing, or only check the Partner Center credentials (`diagnose_only`).
 
-The one-time Partner Center and GitHub setup, including the secrets and variables the workflow needs, is in [`../docs/microsoft-store-listing.md`](../docs/microsoft-store-listing.md#first-submission-and-cicd-setup).
+The exact Partner Center and GitHub setup, including all four environment secrets and two repository variables, is in [`../docs/partner-center-setup.md`](../docs/partner-center-setup.md). The listing copy, screenshots, and first-submission checklist are in [`../docs/microsoft-store-listing.md`](../docs/microsoft-store-listing.md#first-submission-and-cicd-setup).
 
 ## Capabilities
 

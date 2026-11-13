@@ -30,65 +30,90 @@ The source of truth for the Microsoft Store listing and the first submission of 
 
 ### Short description
 
-Queue your demo commands and prompts, then paste them one at a time without going back to your notes.
+Stay in your demo. Queue commands, code, and prompts, then paste them in order without switching back to your notes.
 
 ### Description
 
-Clipboard Next is a small tray app for demo presenters. Line up the commands and prompts for your talk, press Start, and just paste: after each paste, the next snippet is already on your clipboard.
+Your next command. Already on your clipboard.
 
-Prepare your demo:
+Keep your attention on the audience, not your notes. Clipboard Next lines up the commands, code snippets, and AI prompts for your live demo, talk, tutorial, or screencast. Press Start, paste your first snippet, and keep moving. With paste detection turned on, the next snippet is copied automatically after each paste.
 
-- Add snippets by hand, or import your Markdown presenter notes
-- Fenced code blocks become snippets; blockquoted prompts are optional
-- Reorder, edit, and delete before you go on stage
+Build your demo once
 
-Present without looking away:
+Give snippets memorable titles, edit multiline code, and arrange everything in the order you want to present. Import your existing Markdown presenter notes instead of copying each command by hand. Preview the snippets before importing, keep whole code blocks together, and choose whether to include blockquoted prompts. Append to your queue or replace it when you are ready.
 
-- Each Ctrl+V copies the next snippet, after a delay you control
-- Optional Ctrl+Shift+V and Shift+Insert detection, for terminals
-- A tiny always-on-top badge shows where you are, like 3/12, and flashes when a paste is detected
-- Back, Next, Pause, and Start here, from the tray or the editor
-- If another app changes the clipboard, the queue pauses instead of overwriting it
+Present without the back-and-forth
 
-Private by design:
+Turn on optional Ctrl+V paste detection and choose how long to wait before the next snippet is copied. Enable Ctrl+Shift+V and Shift+Insert detection when your terminal needs them. A small, draggable, always-on-top badge shows your place in the demo and flashes when a paste is detected, without taking keyboard focus.
 
-- Your queue stays on your device
-- No account, no network connections, no telemetry
-- Commands are copied as plain text and never run; the app never presses Enter
+Stay in control
 
-Clipboard Next is free and open source.
+Pause, resume, go back, skip ahead, or start from a selected snippet. Keep the editor open while preparing, then close it and use the notification-area controls while presenting. Manual Next and Back work without paste detection. If another app changes the clipboard's text, the queue pauses instead of overwriting what you copied.
+
+Your demo stays yours
+
+No account. No ads. No telemetry. No cloud sync. Your queue and preferences stay on your device, and the app makes no network connections. Snippets are copied as plain text; Clipboard Next never runs commands or presses Enter for you.
+
+Built with native WinUI 3 for Windows 11, with x64 and ARM64 support and optional start with Windows. Free and open source.
 
 ### Product features
 
-- Queue commands and prompts and paste them in order
-- Import snippets from Markdown presenter notes
-- Automatic advance on Ctrl+V, with an adjustable delay
-- Floating always-on-top progress badge
-- Pauses when another app changes the clipboard
-- Runs from the notification area; optional start with Windows
-- Local only: no account, network, or telemetry
+- Queue commands, multiline code, and AI prompts with optional titles and easy reordering.
+- Import Markdown notes with a snippet preview, optional prompts, and whole-block or line-by-line code import.
+- Automatically copy the next snippet after Ctrl+V, with an adjustable 0.10-3.00 second delay; paste detection is optional.
+- Enable Ctrl+Shift+V and Shift+Insert detection for terminals, or advance manually without monitoring the keyboard.
+- Track your place with a draggable, always-on-top badge that never takes keyboard focus.
+- Pause, resume, go back, skip ahead, or start from a selected snippet using the editor or notification-area controls.
+- Protect unexpected copies: the queue pauses when another app changes the clipboard's text.
+- Work locally with no account, ads, network connections, cloud sync, or telemetry.
+- Native Windows 11 app for x64 and ARM64, with optional start with Windows.
 
 ### Search terms
 
-demo, presenter, clipboard, clipboard queue, paste, live coding, snippets
+Enter these as **seven separate search terms**, not one comma-separated term:
+
+- clipboard queue
+- live coding
+- demo presenter
+- code snippets
+- markdown import
+- presentation tools
+- AI prompts
 
 ### What's new in this version
 
-Copy the user-visible changes for the release. For the first release: "Clipboard Next comes to Windows."
+First Windows release: prepare commands, code, and prompts in a native WinUI 3 demo queue. Import Markdown notes, advance as you paste, and follow your progress with a floating badge. Your queue stays on your device.
+
+Replace this text with the user-visible changes for subsequent releases.
+
+### System requirements and listing selections
+
+- Windows 11 version 21H2 (build 22000) or later; desktop PCs, x64 and ARM64.
+- No account, subscription, additional hardware, or developer tools required to use Clipboard Next. Developer tools are needed only to run the example WinUI commands.
+- Select English (United States), Free, no in-app purchases, and the categories above. Complete market availability and the IARC questionnaire in Partner Center; do not infer an assigned rating from this document.
+- Do not select Windows 10, Xbox, or HoloLens support. Do not claim accessibility certification or pen/touch optimization without completing the relevant validation.
 
 ## Screenshot set
 
-Capture from the released Windows package, at 1920 x 1080 if possible (at least 1366 x 768), with no development tools, desktop clutter, or personal content visible. Use harmless sample commands. Use the same theme throughout the set.
+The three **1600 x 1000 PNGs** in [`store-assets/`](store-assets/) are real captures of the locally registered Windows app, using WinUI demo examples and the same light theme. They are not mockups and were not captured from a Store-certified release. Re-capture from the release candidate whenever the UI changes before submission.
 
-| File | Content | Notes |
+Upload these under **Store listings > en-US > Screenshots > Desktop**, in this order. Paste the caption into Partner Center's caption field, not onto the image.
+
+| File | Feature | Caption (under 200 characters) |
 | --- | --- | --- |
-| `01-editor.png` | The editor with a realistic queue and one snippet selected | The hero shot. |
-| `02-tray-popup.png` | The tray popup while a queue is running | Show Current, Up next, and the controls. |
-| `03-presenting.png` | A terminal mid-demo with the floating badge | Show the badge reading something like `3/12`. |
-| `04-import-markdown.png` | The Markdown import page with a preview | Show code blocks selected and a prompt unselected. |
-| `05-settings.png` | The Settings flyout | Show paste detection and the delay. |
+| [`01-demo-queue.png`](store-assets/01-demo-queue.png) | Prepare commands, code, and prompts | Build your demo once. Title, edit, and reorder commands, multiline code, and AI prompts before you present. |
+| [`02-markdown-import.png`](store-assets/02-markdown-import.png) | Import presenter notes with a preview | Turn Markdown notes into your next demo. Preview code blocks, keep multiline snippets intact, and choose which prompts to include. |
+| [`03-presenting.png`](store-assets/03-presenting.png) | Running queue, transport controls, and floating badge at 3/7 | Stay in the flow. Paste in order, keep your place with the floating badge, and pause, go back, or skip ahead whenever you need. |
 
-Keep working files in `windows/docs/store-assets/` and do not commit screenshots containing personal data.
+![Demo queue with WinUI examples](store-assets/01-demo-queue.png)
+
+![Markdown import with whole-block preview](store-assets/02-markdown-import.png)
+
+![Running queue and floating progress badge](store-assets/03-presenting.png)
+
+See [`store-assets/README.md`](store-assets/README.md) for the capture command, safe sample content, and restoration behavior. Never commit screenshots containing personal data.
+
+Microsoft requires desktop screenshots of at least **1366 x 768**, PNG, at most **50 MB each**. Its [image guidance](https://learn.microsoft.com/windows/apps/publish/publish-your-app/msix/screenshots-and-images) recommends no additional logos, icons, or marketing messages. These are screenshot-slot assets, not the optional text-free Super hero art. Three screenshots meet the required minimum of one; Microsoft recommends a larger set, but this set intentionally stays at three.
 
 ## Store assets
 
@@ -130,11 +155,9 @@ Complete the IARC questionnaire truthfully. The app has no user-generated public
 3. **Produce the first upload.** Push the release tag (for example `v1.0.0-windows`). The **Windows Store Publish** workflow's package job builds and verifies the upload. Its later jobs cannot submit anything yet: without the secrets from step 5 they stop at their configuration check. Download the `windows-store-package` artifact from that run. Or build the upload locally as shown in [`windows/packaging/README.md`](../packaging/README.md).
 4. **Submit the first version by hand** in Partner Center: complete the listing, privacy, capability, age-rating, and pricing sections, upload the `.msixupload`, and submit for certification. The Microsoft Store Developer CLI can only update a product that is already live.
 5. **Connect the workflow** once the product is live:
-   - Create a Microsoft Entra application, add it under Partner Center **Account settings → User management → Microsoft Entra applications** with the **Manager** role, and create a client secret.
-   - Create the GitHub environment `microsoft-store`, protect it with required reviewers, and add the environment secrets `PARTNER_CENTER_TENANT_ID`, `PARTNER_CENTER_SELLER_ID`, `PARTNER_CENTER_CLIENT_ID`, and `PARTNER_CENTER_CLIENT_SECRET`.
-   - Add the repository variable `MICROSOFT_STORE_PRODUCT_ID`: the Store product ID (`msstore apps list` shows it), not the package identity or package family name.
-   - Add the repository variable `MICROSOFT_STORE_FLIGHT_GROUP_IDS`: comma-separated Partner Center tester group IDs. It is used only if the workflow has to create the `Internal Testing` flight; an existing flight and its testers are left alone.
-   - Run the workflow with **diagnose_only** checked to confirm the credentials work.
+	  - Follow the exact secret names, portal locations, GitHub scopes, and validation steps in [`partner-center-setup.md`](partner-center-setup.md). There are **four environment secrets** and **two repository variables**; do not substitute package IDs for Store or Entra IDs.
 6. **Release from then on** by pushing a tag like `v1.0.1-windows`. The workflow packages the upload, pauses for approval to submit it to `Internal Testing`, and requires a second approval before submitting that same verified upload to the public listing. Between the two approvals, install the flight as a tester and run the release checks. Submission is not certification: the Store still reviews each update.
 
 Tags have three parts (`v1.2.3-windows`) and become package version `1.2.3.0`; the Store reserves the fourth part. Each release needs a higher version than the last. Windows tags are independent of the macOS `v*-mac` tags.
+
+The workflow publishes **packages**, not this Markdown, screenshots, captions, or listing fields. Enter this copy and upload the images in Partner Center for the first submission; update the portal listing deliberately for later releases. Do not manually edit an API-created draft while CI is using it.
