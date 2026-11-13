@@ -8,7 +8,7 @@ namespace ClipboardNext.App;
 
 /// <summary>
 /// The queue editor: the ordered list of snippets, the selected snippet's text, the transport
-/// controls, Markdown import, and settings. Closing it leaves the app running in the tray.
+/// controls, snippet import, and settings. Closing it leaves the app running in the tray.
 /// </summary>
 public sealed partial class EditorWindow : Window
 {
@@ -38,7 +38,7 @@ public sealed partial class EditorWindow : Window
         _chromeController = new WindowChromeController(this, RootGrid, MinimumWidthDip, MinimumHeightDip);
 
         Controls.Attach(model.Queue, () => _selectedId);
-        ImportPage.Attach(model.Queue, hwnd, ShowQueuePage);
+        ImportPage.Attach(model.Queue, model.Settings, hwnd, ShowQueuePage);
         VersionText.Text = $"Clipboard Next {AppVersionInfo.GetCurrentVersionText()}";
         ApplyStartupState(_startupState);
 

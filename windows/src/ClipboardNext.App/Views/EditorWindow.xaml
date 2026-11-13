@@ -105,7 +105,7 @@
                                 HorizontalAlignment="Center"
                                 HorizontalTextAlignment="Center"
                                 Style="{StaticResource SecondaryCaptionTextStyle}"
-                                Text="Add snippets or import your Markdown presenter notes."
+                                Text="Add snippets or import Markdown or plain text."
                                 TextWrapping="Wrap" />
                         </StackPanel>
 
@@ -252,11 +252,11 @@
                     <Button
                         x:Name="ImportButton"
                         AutomationProperties.AutomationId="ImportMarkdownButton"
-                        AutomationProperties.Name="Import Markdown"
+                        AutomationProperties.Name="Import"
                         Click="OnImportClick">
                         <StackPanel Orientation="Horizontal" Spacing="6">
                             <FontIcon FontSize="14" Glyph="&#xE8B5;" />
-                            <TextBlock Text="Import Markdown…" />
+                            <TextBlock Text="Import…" />
                         </StackPanel>
                     </Button>
                     <Button

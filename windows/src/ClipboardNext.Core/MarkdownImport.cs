@@ -3,7 +3,13 @@ using System.Text;
 
 namespace ClipboardNext.Core;
 
-/// <summary>A snippet found in Markdown presenter notes, offered for import.</summary>
+public enum ImportFormat
+{
+    Markdown,
+    PlainText,
+}
+
+/// <summary>A snippet found in source text, offered for import.</summary>
 public sealed class ImportCandidate
 {
     public ImportCandidate(bool selected, Snippet snippet, string context)
@@ -17,7 +23,7 @@ public sealed class ImportCandidate
 
     public Snippet Snippet { get; }
 
-    /// <summary>The heading (and language or "Prompt") the snippet was found under. Never copied.</summary>
+    /// <summary>Optional Markdown heading/language context. Empty for plain text and never copied.</summary>
     public string Context { get; }
 }
 

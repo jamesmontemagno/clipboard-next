@@ -64,7 +64,7 @@ struct EditorView: View {
                     .overlay {
                         if model.queue.snippets.isEmpty {
                             ContentUnavailableView("Build your demo queue", systemImage: "text.badge.plus",
-                                                   description: Text("Add snippets or import your Markdown presenter notes."))
+                                                   description: Text("Add snippets or import Markdown or plain text."))
                         }
                     }
                     HStack {
@@ -180,7 +180,7 @@ struct EditorView: View {
     @State private var confirmingClear = false
 
     private var importButton: some View {
-        Button("Import Markdown…", systemImage: "square.and.arrow.down") { importing = true }
+        Button("Import…", systemImage: "square.and.arrow.down") { importing = true }
             .disabled(model.queue.status == .running)
     }
 
@@ -235,7 +235,8 @@ struct EditorView: View {
 struct ImportView: View {
     let queue: DemoQueue
     @Environment(\.dismiss) private var dismiss
-    @State private var markdown = ""
+    @AppStorage("importFormat") private var format: ImportFormat = .markdown
+    @State private var source = ""
     @State private var wholeBlocks = false
     @State private var candidates: [ImportCandidate] = []
     @State private var error: String?
@@ -247,20 +248,33 @@ struct ImportView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Text("Import presenter notes").font(.title2.bold())
+                Text("Import snippets").font(.title2.bold())
                 Spacer()
-                Button("Open Markdown File…") { openingFile = true }
+                Button("Open File…") { openingFile = true }
+            }
+            HStack {
+                Text("Format")
+                Picker("Import format", selection: $format) {
+                    Text("Markdown").tag(ImportFormat.markdown)
+                    Text("Plain Text").tag(ImportFormat.plainText)
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .frame(width: 240)
             }
             HSplitView {
-                TextEditor(text: $markdown)
+                TextEditor(text: $source)
                     .font(.system(.body, design: .monospaced))
                     .frame(minWidth: 300)
-                    .onChange(of: markdown) { _, _ in candidates = []; error = nil }
+                    .accessibilityLabel(format == .markdown ? "Markdown presenter notes" : "Plain text, one item per line")
+                    .onChange(of: source) { _, _ in clearPreview() }
                 List {
                     ForEach($candidates) { $candidate in
                         Toggle(isOn: $candidate.selected) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(candidate.context).font(.caption).foregroundStyle(.secondary)
+                                if !candidate.context.isEmpty {
+                                    Text(candidate.context).font(.caption).foregroundStyle(.secondary)
+                                }
                                 Text(candidate.snippet.text).font(.system(.caption, design: .monospaced))
                                     .lineLimit(5)
                             }
@@ -273,18 +287,24 @@ struct ImportView: View {
                 .overlay {
                     if candidates.isEmpty {
                         ContentUnavailableView("Preview before importing", systemImage: "doc.text.magnifyingglass",
-                                               description: Text("Code blocks are selected by default. Blockquoted prompts are optional."))
+                                               description: Text(format == .markdown
+                                                   ? "Code blocks are selected by default. Blockquoted prompts are optional."
+                                                   : "Each nonblank line becomes an untitled snippet, selected by default."))
                     }
                 }
             }
-            Toggle("Keep each code block as one multiline snippet", isOn: $wholeBlocks)
-                .onChange(of: wholeBlocks) { _, _ in candidates = []; error = nil }
-            Text("By default, each nonblank code line becomes a snippet. Splitting is not shell-aware: keep whole blocks for continuations or scripts. Review commands before pasting.")
+            if format == .markdown {
+                Toggle("Keep each code block as one multiline snippet", isOn: $wholeBlocks)
+                    .onChange(of: wholeBlocks) { _, _ in clearPreview() }
+            }
+            Text(format == .markdown
+                ? "By default, each nonblank code line becomes a snippet. Splitting is not shell-aware: keep whole blocks for continuations or scripts. Review commands before pasting."
+                : "Each nonblank line becomes an untitled snippet. Whitespace and repeated lines are kept. Review commands before pasting.")
                 .font(.caption).foregroundStyle(.secondary)
             if let error { Text(error).foregroundStyle(.red).font(.caption) }
             HStack {
                 Button("Cancel") { dismiss() }
-                Button("Preview") { preview() }.disabled(markdown.isEmpty)
+                Button("Preview") { preview() }.disabled(source.isEmpty)
                 Spacer()
                 Text("\(chosen.count) selected").foregroundStyle(.secondary)
                 Button("Replace Queue…") {
@@ -297,15 +317,16 @@ struct ImportView: View {
         }
         .padding(22)
         .frame(width: 840, height: 580)
+        .onChange(of: format) { _, _ in clearPreview() }
         .fileImporter(isPresented: $openingFile, allowedContentTypes: [.plainText, .text]) { result in
             do {
                 let url = try result.get()
                 let accessed = url.startAccessingSecurityScopedResource()
                 defer { if accessed { url.stopAccessingSecurityScopedResource() } }
-                markdown = try String(contentsOf: url, encoding: .utf8)
-                candidates = []
+                source = try String(contentsOf: url, encoding: .utf8)
+                clearPreview()
             } catch {
-                self.error = "Could not open Markdown: \(error.localizedDescription)"
+                self.error = "Could not open file: \(error.localizedDescription)"
             }
         }
         .confirmationDialog("Replace all existing snippets?", isPresented: $confirmingReplace) {
@@ -313,9 +334,16 @@ struct ImportView: View {
         }
     }
 
+    private func clearPreview() {
+        candidates = []
+        error = nil
+    }
+
     private func preview() {
         do {
-            candidates = try MarkdownImport.parse(markdown, wholeBlocks: wholeBlocks)
+            candidates = try format == .markdown
+                ? MarkdownImport.parse(source, wholeBlocks: wholeBlocks)
+                : PlainTextImport.parse(source)
             error = nil
         } catch {
             candidates = []
