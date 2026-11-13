@@ -119,6 +119,18 @@ Microsoft requires desktop screenshots of at least **1366 x 768**, PNG, at most 
 
 The package logos are generated into `windows/src/ClipboardNext.App/Assets/` by `windows/tools/generate-icons.py`. Upload the Store-logo variants Partner Center asks for and check them on light and dark backgrounds.
 
+### Optional promotional hero
+
+Upload [`super-hero-1920x1080.png`](store-assets/super-hero-1920x1080.png) under **Trailers and additional assets > Windows 10 or Windows 11 and Xbox image > 16:9 Super hero art**, not under Desktop screenshots. This text-free, website-inspired illustration uses a violet clipboard, queued sheets, and a mint next-sheet arrow. It is promotional artwork, not a screenshot; the original three Desktop captures above are unchanged.
+
+The file is **1920 x 1080**, RGB PNG, with no product title, text, app UI, or device imagery. Review the Store's cropped previews before submitting. Providing hero artwork does not change supported platforms or guarantee a featured placement.
+
+### Marketing screenshot compositions
+
+The three **1920 x 1200** PNGs in [`store-assets/marketing/`](store-assets/marketing/) add website-style headlines and benefit copy around the real Windows captures. Use them as separate promotional compositions; retain the clean originals for Desktop screenshot uploads. They contain text and app UI, so they are not suitable for the Super hero art field either.
+
+See the [asset instructions](store-assets/README.md#marketing-screenshot-compositions) for the individual images and the repeatable Pillow generator.
+
 ## Compliance answers
 
 ### Privacy

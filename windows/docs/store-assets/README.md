@@ -2,6 +2,32 @@
 
 Three real WinUI 3 captures, **1600 x 1000 PNG**, using harmless WinUI demo snippets. Upload only `01-demo-queue.png`, `02-markdown-import.png`, and `03-presenting.png`, in that order. Captions and the complete listing are in [microsoft-store-listing.md](../microsoft-store-listing.md#screenshot-set).
 
+## Marketing screenshot compositions
+
+The separate [`marketing/`](marketing/) folder contains **1920 x 1200 RGB PNG** promotional versions with website-inspired colors, headlines, and benefit copy around the real screenshots:
+
+1. [`marketing/01-demo-queue.png`](marketing/01-demo-queue.png): **Your demo. Already queued.**
+2. [`marketing/02-markdown-import.png`](marketing/02-markdown-import.png): **From notes to showtime.**
+3. [`marketing/03-presenting.png`](marketing/03-presenting.png): **Less switching. More presenting.** Includes a labeled enlargement of the real floating badge.
+
+These are marketing compositions for promotional use, not the clean Desktop screenshot set recommended by Microsoft's guidance. They also contain text and app UI, so **do not use them in the text-free Super hero art field**. The clean originals remain unchanged. Only the captures' black outer gutters are removed before scaling; app controls and content are not redrawn.
+
+Regenerate after re-capturing the originals, from the repository root on Windows:
+
+```powershell
+python .\windows\tools\generate-store-marketing.py
+```
+
+Requires Pillow, as does the existing icon generator, and uses the installed Segoe UI fonts. The script does not launch the app or change the source captures. Headline and callout copy lives in the generator so the set can be reproduced and revised together.
+
+## Promotional hero artwork
+
+[`super-hero-1920x1080.png`](super-hero-1920x1080.png) is separate **1920 x 1080 RGB PNG** artwork for Partner Center's **Windows 10 or Windows 11 and Xbox image > 16:9 Super hero art** field. Do not upload it as a Desktop screenshot. The field name does not imply Windows 10 or Xbox support.
+
+The original AI-assisted illustration brings the website's navy, violet, and mint palette to a dimensional clipboard, queued paper sheets, and a next-sheet arrow. It contains no text, product title, app UI, or device imagery. The generated illustration was resized and minimally center-cropped to the exact Store dimensions; it is not an app capture. The three original screenshots remain unchanged.
+
+The central clipboard and arrow carry the composition; the lower third holds only the lower edges of the objects and their shadows so a Store gradient can overlay it. Check Partner Center's cropped previews before submitting. Hero artwork can be used in promotional Store layouts, but does not guarantee featured placement. See Microsoft's [Super hero art guidance](https://learn.microsoft.com/windows/apps/publish/publish-your-app/msix/screenshots-and-images#windows-10-and-xbox-image-169-super-hero-art).
+
 ## Re-capture
 
 Build/register the desired package using Visual Studio's **Package** profile, and verify that it runs. Then **Exit Clipboard Next from its tray popup** (closing the editor is not enough). From the repository root, run on an interactive Windows desktop:
