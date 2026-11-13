@@ -1,3 +1,60 @@
+function detectPlatform() {
+  const agent = navigator.userAgent;
+  const hints = navigator.userAgentData;
+  const touchMac = navigator.maxTouchPoints > 1
+    && (/Macintosh|Mac OS X/i.test(agent) || navigator.platform === "MacIntel");
+
+  if (hints?.mobile || /Android|iPhone|iPad|iPod|Windows Phone/i.test(agent) || touchMac) {
+    return null;
+  }
+
+  const agentPlatform = /Windows NT/i.test(agent) ? "windows"
+    : /Macintosh|Mac OS X/i.test(agent) ? "macos"
+    : /Linux|X11|CrOS/i.test(agent) ? "other" : null;
+
+  if (hints?.platform) {
+    const hintPlatform = hints.platform === "Windows" ? "windows"
+      : hints.platform === "macOS" ? "macos" : null;
+    return hintPlatform && (!agentPlatform || agentPlatform === hintPlatform) ? hintPlatform : null;
+  }
+
+  return agentPlatform === "other" ? null : agentPlatform;
+}
+
+const detectedPlatform = detectPlatform();
+const platformSelect = document.getElementById("platform-select");
+
+function renderPlatform() {
+  const automatic = platformSelect.value === "auto";
+  const platform = automatic ? detectedPlatform : platformSelect.value;
+  const name = platform === "macos" ? "macOS" : "Windows";
+
+  for (const element of document.querySelectorAll("[data-platform]")) {
+    element.hidden = platform !== null && element.dataset.platform !== platform;
+  }
+  for (const element of document.querySelectorAll("[data-platform-label], [data-platform-separator]")) {
+    element.hidden = platform !== null;
+  }
+  for (const link of document.querySelectorAll("[data-download-platform]")) {
+    link.classList.toggle("primary", link.dataset.downloadPlatform === platform);
+  }
+  for (const card of document.querySelectorAll("[data-download-card]")) {
+    card.classList.toggle("recommended", card.dataset.downloadCard === platform);
+  }
+  for (const label of document.querySelectorAll("[data-recommendation]")) {
+    label.hidden = label.dataset.recommendation !== platform;
+    label.textContent = automatic ? "Recommended for your device" : "Selected platform";
+  }
+
+  document.getElementById("platform-status").textContent = platform
+    ? `Showing ${name} instructions${automatic ? " for your device" : ""}. Both downloads are available below.`
+    : "Showing both platforms. Choose macOS or Windows to tailor the instructions.";
+}
+
+platformSelect.addEventListener("change", renderPlatform);
+renderPlatform();
+document.querySelector(".platform-picker").hidden = false;
+
 const commands = [
   "maui devflow broker start",
   "adb reverse tcp:19223 tcp:19223",

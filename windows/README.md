@@ -4,7 +4,7 @@ A native Windows port of [Clipboard Next](../README.md): a WinUI 3 app that live
 
 It is distributed **only through the Microsoft Store**, as a packaged (MSIX) app. There is no direct download, sideload, or winget flavor: the Store signs the package and delivers updates.
 
-> **Status: preparing for the Microsoft Store.** The native app runs on Windows, and the Store screenshot set is captured from the real WinUI app. Store certification and release validation are still required; see [What still needs a Windows machine](#what-still-needs-a-windows-machine).
+> **Available now:** [Get Clipboard Next from Microsoft Store](https://apps.microsoft.com/detail/9NCXV6W499WM) for Windows 11 21H2 or later, on x64 or ARM64. Installation and updates are handled by the Store.
 
 ## Using it
 
@@ -136,11 +136,11 @@ See [`docs/microsoft-store-listing.md`](docs/microsoft-store-listing.md) for the
 - [Partner Center secret and variable setup](docs/partner-center-setup.md): the four `microsoft-store` environment secrets, two repository variables, portal locations, approvals, and safe diagnostics.
 - [Three Store screenshots and capture instructions](docs/store-assets/README.md): real queue, Markdown import, and presenting views, prefilled with WinUI examples.
 
-## What still needs a Windows machine
+## Windows release validation
 
-The port started on Linux and now runs on Windows. Before the first Store submission:
+The app is live in the Microsoft Store. For future releases, use a Windows machine to:
 
-1. Let `windows-build.yml` compile and package the app, and fix whatever the XAML compiler reports.
+1. Confirm `windows-build.yml` compiles and packages the app, and fix whatever the XAML compiler reports.
 2. Run the app and walk through the live check above, the tray popup, the badge on a second display, and both light and dark themes.
-3. Reserve **Clipboard Next** in Partner Center and confirm the package identity in `Package.appxmanifest` matches.
+3. Confirm the package identity in `Package.appxmanifest` still matches the **Clipboard Next** product in Partner Center.
 4. Review the [three Store screenshots](docs/store-assets/README.md) against the release candidate and re-capture after any UI changes.

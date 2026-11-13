@@ -1,10 +1,14 @@
 # Clipboard Next
 
-A small, local-only Swift macOS menu bar app for demo presenters. Prepare commands or prompts, press Start, and paste them one at a time without returning to your notes.
+A small, local-only app for demo presenters on macOS and Windows. Prepare commands or prompts, press Start, and paste them one at a time without returning to your notes.
 
-Website: <https://clipboardnext.com/> · A Windows version is in progress: see [Windows](#windows).
+Website: <https://clipboardnext.com/> · [Get it for Windows from Microsoft Store](https://apps.microsoft.com/detail/9NCXV6W499WM).
 
 ## Install
+
+### macOS
+
+Requires macOS 14+ on Apple silicon or Intel.
 
 ```sh
 brew tap jamesmontemagno/clipboard-next https://github.com/jamesmontemagno/clipboard-next
@@ -13,6 +17,12 @@ brew install --cask clipboard-next
 ```
 
 Or download the notarized zip from [GitHub Releases](https://github.com/jamesmontemagno/clipboard-next/releases/latest).
+
+### Windows
+
+Install [Clipboard Next from Microsoft Store](https://apps.microsoft.com/detail/9NCXV6W499WM). Requires Windows 11 21H2 or later, on x64 or ARM64. The Store delivers installation and updates; there is no direct download or sideload edition.
+
+Turn on paste detection in the editor, tray popup, or Settings to advance after **Ctrl+V**. Optional **Terminal paste shortcuts** also detect **Ctrl+Shift+V** and **Shift+Insert**. See the [Windows guide](windows/README.md) for details.
 
 ## Run from source
 
@@ -91,7 +101,7 @@ Required repository secrets: `APPLE_MACOS_DIRECT_CERTIFICATE_P12` (base64-encode
 
 ## Windows
 
-A native Windows port lives in [`windows/`](windows/): a WinUI 3 app in the taskbar's notification area, with the same queue, Markdown import, paste detection (Ctrl+V), and floating badge. It is a work in progress and will be distributed only through the Microsoft Store.
+A native Windows port lives in [`windows/`](windows/): a WinUI 3 app in the taskbar's notification area, with the same queue, Markdown import, paste detection (Ctrl+V), and floating badge. It is available exclusively through the [Microsoft Store](https://apps.microsoft.com/detail/9NCXV6W499WM).
 
 - [`windows/README.md`](windows/README.md): how it works, how it differs from the macOS app, and how to build, run, and test it.
 - [`windows/docs/microsoft-store-listing.md`](windows/docs/microsoft-store-listing.md): the Store listing and the submission and release process.
@@ -106,7 +116,9 @@ dotnet test windows/tests/ClipboardNext.Core.Tests/ClipboardNext.Core.Tests.cspr
 
 ## Website
 
-The static site lives in [`site/`](site/) and deploys through [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) on pushes to `main` that touch `site/`. Enable it once in **Settings → Pages → Source: GitHub Actions**, then set **Custom domain** to `clipboardnext.com` and turn on **Enforce HTTPS**. Workflow-based deploys ignore `site/CNAME`, so the Settings field is what binds the domain; the file is only a reference. Preview locally with `cd site && python3 -m http.server 8765`. The Windows download card is a "Coming soon" placeholder until the Store listing is live. [`site/privacy.html`](site/privacy.html) is the privacy policy the Microsoft Store listing links to; keep it in step with what the apps actually do.
+The static site lives in [`site/`](site/) and deploys through [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) on pushes to `main` that touch `site/`. Enable it once in **Settings → Pages → Source: GitHub Actions**, then set **Custom domain** to `clipboardnext.com` and turn on **Enforce HTTPS**. Workflow-based deploys ignore `site/CNAME`, so the Settings field is what binds the domain; the file is only a reference. Preview locally with `cd site && python3 -m http.server 8765`.
+
+Both macOS and Windows downloads stay visible. The site detects supported desktop platforms to recommend a download and tailor shortcuts and setup guidance; the **Show instructions for** selector overrides detection for the current page without saving a preference. Mobile, Linux, unknown platforms, and JavaScript-disabled browsers see labeled guidance for both platforms. When verifying changes, check automatic detection, both manual overrides, the JavaScript-disabled fallback, and narrow-screen layouts. [`site/privacy.html`](site/privacy.html) is the privacy policy the Microsoft Store listing links to; keep it in step with what the apps actually do.
 
 ## Tests
 
