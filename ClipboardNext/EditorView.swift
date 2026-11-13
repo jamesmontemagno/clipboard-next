@@ -11,7 +11,6 @@ struct EditorView: View {
     }
 
     var body: some View {
-        @Bindable var badge = model.badge
         VStack(spacing: 0) {
             HStack(spacing: 16) {
                 Image(systemName: "clipboard").font(.largeTitle).foregroundStyle(.tint)
@@ -113,25 +112,20 @@ struct EditorView: View {
             }
             Divider()
             VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Button("Import Markdown…", systemImage: "square.and.arrow.down") { importing = true }
-                        .disabled(model.queue.status == .running)
-                    Toggle("Floating badge", isOn: $badge.isVisible).toggleStyle(.switch)
-                    HStack(spacing: 6) {
-                        Text("Next after")
-                        Slider(
-                            value: Binding(
-                                get: { Double(model.queue.advanceDelayMilliseconds) },
-                                set: { model.queue.setAdvanceDelay(milliseconds: Int($0)) }),
-                            in: Double(DemoQueue.delayRange.lowerBound)...Double(DemoQueue.delayRange.upperBound),
-                            step: 50)
-                            .frame(width: 140)
-                        Text(String(format: "%.2f s", Double(model.queue.advanceDelayMilliseconds) / 1000))
-                            .monospacedDigit().foregroundStyle(.secondary)
-                            .frame(width: 52, alignment: .leading)
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 12) {
+                        importButton
+                        badgeToggle
+                        delayControl
                     }
-                    .help("How long to wait after Command-V before the next snippet replaces the clipboard. Increase it if a slow app pastes the wrong snippet.")
-                    Spacer()
+                    .fixedSize(horizontal: true, vertical: false)
+                    VStack(alignment: .leading, spacing: 8) {
+                        importButton
+                        badgeToggle
+                        delayControl
+                    }
+                }
+                HStack {
                     if model.monitor.monitoring {
                         Label("Paste detection on", systemImage: "checkmark.circle").foregroundStyle(.green)
                     } else {
@@ -165,6 +159,7 @@ struct EditorView: View {
                     }
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(16)
         }
         .sheet(isPresented: $importing) { ImportView(queue: model.queue) }
@@ -183,6 +178,34 @@ struct EditorView: View {
 
     @State private var confirmingSave = false
     @State private var confirmingClear = false
+
+    private var importButton: some View {
+        Button("Import Markdown…", systemImage: "square.and.arrow.down") { importing = true }
+            .disabled(model.queue.status == .running)
+    }
+
+    private var badgeToggle: some View {
+        @Bindable var badge = model.badge
+        return Toggle("Floating badge", isOn: $badge.isVisible).toggleStyle(.switch)
+    }
+
+    private var delayControl: some View {
+        HStack(spacing: 6) {
+            Text("Next after").fixedSize()
+            Slider(
+                value: Binding(
+                    get: { Double(model.queue.advanceDelayMilliseconds) },
+                    set: { model.queue.setAdvanceDelay(milliseconds: Int($0)) }),
+                in: Double(DemoQueue.delayRange.lowerBound)...Double(DemoQueue.delayRange.upperBound),
+                step: 50)
+                .frame(width: 140)
+                .accessibilityLabel("Next after")
+            Text(String(format: "%.2f s", Double(model.queue.advanceDelayMilliseconds) / 1000))
+                .monospacedDigit().foregroundStyle(.secondary)
+                .fixedSize()
+        }
+        .help("How long to wait after Command-V before the next snippet replaces the clipboard. Increase it if a slow app pastes the wrong snippet.")
+    }
 
     private func delete(_ id: UUID) {
         model.queue.update(model.queue.snippets.filter { $0.id != id })

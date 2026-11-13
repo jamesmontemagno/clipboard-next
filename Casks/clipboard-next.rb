@@ -8,7 +8,7 @@ cask "clipboard-next" do
   desc "Menu bar app that queues demo commands onto the clipboard, one paste at a time"
   homepage "https://clipboardnext.com/"
 
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   app "ClipboardNext.app"
 
