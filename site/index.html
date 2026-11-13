@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clipboard Next: paste your demo, one command at a time</title>
+  <meta name="description" content="A tiny macOS menu bar app for presenters. Queue your demo commands and prompts; every Command-V loads the next one onto your clipboard.">
+  <meta name="theme-color" content="#0d0f1a">
+  <meta property="og:title" content="Clipboard Next">
+  <meta property="og:description" content="Queue your demo commands. Paste. The next one is already on your clipboard.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://clipboardnext.com/">
+  <link rel="canonical" href="https://clipboardnext.com/">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="nav">
+    <a class="brand" href="./"><img src="assets/logo.svg" alt="" width="28" height="28"> Clipboard Next</a>
+    <nav aria-label="Primary">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#download">Download</a>
+      <a href="https://github.com/jamesmontemagno/clipboard-next">GitHub</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">For live demos, talks, and screencasts</p>
+        <h1>Paste. <span class="grad">The next command is already waiting.</span></h1>
+        <p class="lede">Clipboard Next is a tiny macOS menu bar app that queues your demo commands and prompts. Every <kbd>⌘</kbd><kbd>V</kbd> loads the next one, so you never alt-tab back to your notes on stage.</p>
+        <div class="cta">
+          <a class="btn primary" href="#download">Get it for macOS</a>
+          <button class="btn ghost copy" type="button" data-copy="brew tap jamesmontemagno/clipboard-next https://github.com/jamesmontemagno/clipboard-next && brew install --cask clipboard-next">
+            <code>brew install --cask clipboard-next</code><span class="copy-label">Copy</span>
+          </button>
+        </div>
+        <p class="fine">Free · macOS 14+ · Apple silicon &amp; Intel · Windows coming soon</p>
+      </div>
+
+      <div class="stage" aria-label="Animated demo of Clipboard Next advancing through commands">
+        <div class="window terminal">
+          <div class="titlebar"><i></i><i></i><i></i><span>Terminal · demo</span></div>
+          <pre class="term" id="term" aria-live="off"></pre>
+        </div>
+        <div class="queue window">
+          <div class="titlebar"><i></i><i></i><i></i><span>Queue</span></div>
+          <ol id="queue"></ol>
+        </div>
+        <div class="badge" id="badge" aria-hidden="true"><span class="badge-icon">📋</span><span id="badge-count">1/5</span></div>
+      </div>
+    </section>
+
+    <section id="how" class="section">
+      <h2>Three steps to a smoother demo</h2>
+      <ol class="steps">
+        <li>
+          <span class="num">1</span>
+          <h3>Build your queue</h3>
+          <p>Type snippets or import your Markdown presenter notes. Code blocks become snippets; blockquoted prompts are optional.</p>
+        </li>
+        <li>
+          <span class="num">2</span>
+          <h3>Press Start</h3>
+          <p>The first snippet lands on your clipboard. A floating badge shows where you are, like <strong>3/12</strong>.</p>
+        </li>
+        <li>
+          <span class="num">3</span>
+          <h3>Just paste</h3>
+          <p>After each <kbd>⌘</kbd><kbd>V</kbd>, the next snippet is copied for you. The badge flashes ✓ so you know it registered.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="features" class="section">
+      <h2>Small app, presenter-grade details</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>⏱ Adjustable timing</h3>
+          <p>Choose how long to wait after a paste before the next snippet loads: 0.1 to 3 seconds. Slow down for apps that read the clipboard late.</p>
+        </article>
+        <article class="card">
+          <h3>📝 Markdown import</h3>
+          <p>Paste your script and preview every candidate in order. Split code blocks line by line, or keep multiline blocks intact.</p>
+        </article>
+        <article class="card">
+          <h3>✅ Visible confirmation</h3>
+          <p>The menu bar icon and the optional draggable badge flash when a paste is detected, without stealing focus.</p>
+        </article>
+        <article class="card">
+          <h3>🛡 Safe by default</h3>
+          <p>Copy something else mid-demo and the queue pauses instead of overwriting it. Commands are never run, and Return is never pressed.</p>
+        </article>
+        <article class="card">
+          <h3>⏭ Manual control</h3>
+          <p>Pause, resume, skip with Next, or Start Here from any snippet. It works without paste detection, too.</p>
+        </article>
+        <article class="card">
+          <h3>🔒 Local only</h3>
+          <p>No accounts, telemetry, or network. A listen-only keyboard monitor watches for ⌘V and nothing else.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="download" class="section">
+      <h2>Download</h2>
+      <div class="downloads">
+        <article class="card platform">
+          <div class="platform-head"><span class="os" aria-hidden="true">💻</span><h3>macOS</h3><span class="pill ok">Available</span></div>
+          <p>Install with Homebrew:</p>
+          <div class="codeblock">
+            <pre><code>brew tap jamesmontemagno/clipboard-next https://github.com/jamesmontemagno/clipboard-next
+brew install --cask clipboard-next</code></pre>
+            <button class="btn small copy" type="button" data-copy="brew tap jamesmontemagno/clipboard-next https://github.com/jamesmontemagno/clipboard-next&#10;brew install --cask clipboard-next"><span class="copy-label">Copy</span></button>
+          </div>
+          <p>Or download the signed, notarized app from <a href="https://github.com/jamesmontemagno/clipboard-next/releases/latest">GitHub Releases</a>.</p>
+          <p class="fine">Requires macOS 14 Sonoma or later. For automatic advancing, allow Clipboard Next under <em>Privacy &amp; Security → Input Monitoring</em>.</p>
+        </article>
+        <article class="card platform soon">
+          <div class="platform-head"><span class="os" aria-hidden="true">🪟</span><h3>Windows</h3><span class="pill">Coming soon</span></div>
+          <p>A native Windows version is on the way, with the same queue, paste detection, and floating badge.</p>
+          <p><a href="https://github.com/jamesmontemagno/clipboard-next">Watch the repo on GitHub</a> to hear when it ships.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section privacy">
+      <h2>Your clipboard stays yours</h2>
+      <p>Clipboard Next stores your queue locally at <code>~/Library/Application Support/ClipboardNext</code>. It never uploads anything, never runs what you paste, and stops when another app takes over the clipboard.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Made for presenters by <a href="https://github.com/jamesmontemagno">James Montemagno</a>. <a href="https://github.com/jamesmontemagno/clipboard-next">Source on GitHub</a>.</p>
+  </footer>
+  <script src="script.js" defer></script>
+</body>
+</html>
