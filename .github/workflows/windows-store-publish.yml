@@ -23,7 +23,7 @@ on:
       replace_flight_draft:
         description: 'Publish only: discard an unsubmitted portal-created Internal Testing draft (keeps the flight and testers)'
         required: false
-        default: false
+        default: true
         type: boolean
       diagnose_only:
         description: 'Only check the Partner Center credentials. Skips packaging and publishing.'
@@ -257,7 +257,7 @@ jobs:
         env:
           STORE_PRODUCT_ID: ${{ vars.MICROSOFT_STORE_PRODUCT_ID }}
           FLIGHT_GROUP_IDS: ${{ vars.MICROSOFT_STORE_FLIGHT_GROUP_IDS }}
-          REPLACE_FLIGHT_DRAFT: ${{ github.event_name == 'workflow_dispatch' && inputs.replace_flight_draft }}
+          REPLACE_FLIGHT_DRAFT: ${{ github.event_name == 'push' || inputs.replace_flight_draft }}
           PARTNER_CENTER_TENANT_ID: ${{ secrets.PARTNER_CENTER_TENANT_ID }}
           PARTNER_CENTER_CLIENT_ID: ${{ secrets.PARTNER_CENTER_CLIENT_ID }}
           PARTNER_CENTER_CLIENT_SECRET: ${{ secrets.PARTNER_CENTER_CLIENT_SECRET }}

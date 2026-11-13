@@ -62,6 +62,8 @@ Keep these at repository scope as the workflow messages specify. Environment-sco
 
 When ready, a `v*-windows` tag or a manual run with **publish** checked packages and tests the upload, then submits it to Internal Testing and production after their separate approvals. The same verified `.msixupload` and symbols are used for both. Do not approve production until the flight is available and tested.
 
+After Internal Testing approval, tag releases automatically discard an existing portal-created `PendingCommit` draft without an API upload URL so the CLI can create an uploadable submission. Manual runs default **replace_flight_draft** to checked; uncheck it to preserve the draft and stop publication instead. Only that unsubmitted draft is removed: the flight, tester groups, and production listing are preserved. Submissions beyond the editable-draft stage still block publication.
+
 ## Troubleshooting and rotation
 
 | Symptom | Check |
@@ -73,6 +75,6 @@ When ready, a `v*-windows` tag or a manual run with **publish** checked packages
 | Token succeeds, Store API returns 401/403 | Associate the same Entra application with the correct Windows developer account in Partner Center and assign Manager. |
 | Product cannot be read | Store product ID, developer-account association, and manual first submission/live status. |
 | Missing Internal Testing flight | Create it and assign testers manually, or supply valid `MICROSOFT_STORE_FLIGHT_GROUP_IDS`. |
-| Portal-created flight draft blocks upload | Resolve it in Partner Center. Only use **replace_flight_draft** after explicitly deciding to discard that unsubmitted flight draft; it preserves the flight and tester groups. |
+| Portal-created flight draft blocks upload | Tag releases replace eligible unsubmitted drafts after Internal Testing approval. For manual publishing, leave **replace_flight_draft** checked to allow replacement, or resolve the draft in Partner Center. The flight and tester groups are preserved. |
 
 For rotation: create a new key, update the existing environment secret, run diagnostics successfully, then revoke the old key. Never print the secret or access token to verify it. No Partner Center credentials have been created or configured merely by adding this documentation.
