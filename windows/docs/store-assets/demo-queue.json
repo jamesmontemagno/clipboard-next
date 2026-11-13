@@ -1,0 +1,9 @@
+[
+  { "id": "00000000-0000-0000-0000-000000000001", "title": "Build the WinUI app", "text": "dotnet build .\u005cDemoApp.csproj -p:Platform=x64" },
+  { "id": "00000000-0000-0000-0000-000000000002", "title": "Add a Fluent action button", "text": "<Button\n    Content=\"Try it\"\n    Style=\"{StaticResource AccentButtonStyle}\"\n    Click=\"OnTryItClick\" />" },
+  { "id": "00000000-0000-0000-0000-000000000003", "title": "Show an inline success message", "text": "<InfoBar\n    x:Name=\"StatusBar\"\n    Title=\"Ready for your next idea\"\n    Message=\"Your WinUI demo is running.\"\n    Severity=\"Success\"\n    IsOpen=\"False\" />" },
+  { "id": "00000000-0000-0000-0000-000000000004", "title": "Wire up the C# click handler", "text": "private void OnTryItClick(object sender, RoutedEventArgs e)\n{\n    StatusBar.IsOpen = true;\n}" },
+  { "id": "00000000-0000-0000-0000-000000000005", "title": "Ask your coding assistant", "text": "Add a keyboard accelerator to this WinUI 3 button.\nUse Ctrl+Shift+R and keep the existing click handler.\nExplain how to make the action accessible." },
+  { "id": "00000000-0000-0000-0000-000000000006", "title": "Run the packaged demo", "text": "dotnet run --project .\u005cDemoApp.csproj -p:Platform=x64" },
+  { "id": "00000000-0000-0000-0000-000000000007", "title": "Build for your next session", "text": "dotnet build .\u005cDemoApp.csproj -c Release -p:Platform=x64" }
+]

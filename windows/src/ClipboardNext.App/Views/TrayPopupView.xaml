@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="ClipboardNext.App.TrayPopupView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ClipboardNext.App">
+
+    <!--  The quick-access popup shown from the tray icon: queue status and controls on a layered acrylic surface, with a command bar along the bottom.  -->
+    <Grid x:Name="RootGrid" Width="360">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="48" />
+        </Grid.RowDefinitions>
+
+        <Border
+            Background="{ThemeResource LayerOnAcrylicFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Padding="16" Spacing="12">
+                    <Grid ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Image
+                            Width="20"
+                            Height="20"
+                            Source="ms-appx:///Assets/AppIcon-256.png" />
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Style="{StaticResource BodyStrongTextBlockStyle}"
+                            Text="Clipboard Next" />
+                        <TextBlock
+                            x:Name="StatusText"
+                            Grid.Column="2"
+                            VerticalAlignment="Center"
+                            AutomationProperties.AutomationId="TrayStatusText"
+                            Style="{StaticResource SecondaryCaptionTextStyle}" />
+                    </Grid>
+
+                    <TextBlock
+                        x:Name="ProgressText"
+                        AutomationProperties.AutomationId="TrayProgressText"
+                        AutomationProperties.LiveSetting="Polite"
+                        Style="{StaticResource SubtitleTextBlockStyle}" />
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Style="{StaticResource SectionLabelTextStyle}" Text="CURRENT" />
+                        <TextBlock
+                            x:Name="CurrentText"
+                            Height="48"
+                            AutomationProperties.AutomationId="TrayCurrentSnippetText"
+                            FontSize="12"
+                            MaxLines="3"
+                            Style="{StaticResource SnippetTextStyle}" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Style="{StaticResource SectionLabelTextStyle}" Text="UP NEXT" />
+                        <TextBlock
+                            x:Name="NextText"
+                            Height="48"
+                            AutomationProperties.AutomationId="TrayNextSnippetText"
+                            FontSize="12"
+                            MaxLines="3"
+                            Style="{StaticResource SnippetTextStyle}" />
+                    </StackPanel>
+
+                    <local:QueueControls x:Name="Controls" />
+
+                    <!--  One line that always says what matters most: a problem, the queue's message, or how pastes are detected.  -->
+                    <Grid MinHeight="40" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid Width="16" VerticalAlignment="Center">
+                            <FontIcon
+                                x:Name="NoticeInfoIcon"
+                                FontSize="14"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Glyph="&#xE946;" />
+                            <FontIcon
+                                x:Name="NoticeWarningIcon"
+                                FontSize="14"
+                                Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                                Glyph="&#xE7BA;"
+                                Visibility="Collapsed" />
+                            <FontIcon
+                                x:Name="NoticeOkIcon"
+                                Glyph="&#xE73E;"
+                                Style="{StaticResource SuccessIconStyle}"
+                                Visibility="Collapsed" />
+                        </Grid>
+                        <TextBlock
+                            x:Name="NoticeText"
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            AutomationProperties.AutomationId="TrayNoticeText"
+                            AutomationProperties.LiveSetting="Polite"
+                            MaxLines="3"
+                            Style="{StaticResource SecondaryCaptionTextStyle}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="Wrap" />
+                        <Button
+                            x:Name="NoticeButton"
+                            Grid.Column="2"
+                            VerticalAlignment="Center"
+                            AutomationProperties.AutomationId="TrayNoticeButton"
+                            Click="OnNoticeButtonClick"
+                            Visibility="Collapsed" />
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <Grid
+            Grid.Row="1"
+            Padding="12,0"
+            ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Button
+                x:Name="OpenEditorButton"
+                VerticalAlignment="Center"
+                AutomationProperties.AutomationId="TrayOpenEditorButton"
+                AutomationProperties.Name="Open queue editor"
+                Click="OnOpenEditorClick"
+                Style="{StaticResource SubtleButtonStyle}">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <FontIcon FontSize="14" Glyph="&#xE70F;" />
+                    <TextBlock Text="Open editor" />
+                </StackPanel>
+            </Button>
+
+            <StackPanel
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Orientation="Horizontal"
+                Spacing="4">
+                <Button
+                    x:Name="ResetBadgeButton"
+                    Width="36"
+                    Height="36"
+                    Padding="6"
+                    AutomationProperties.AutomationId="TrayResetBadgeButton"
+                    AutomationProperties.Name="Reset badge position"
+                    Click="OnResetBadgeClick"
+                    Style="{StaticResource SubtleButtonStyle}"
+                    ToolTipService.ToolTip="Reset badge position">
+                    <FontIcon FontSize="16" Glyph="&#xE72C;" />
+                </Button>
+                <ToggleButton
+                    x:Name="BadgeToggle"
+                    AutomationProperties.AutomationId="TrayBadgeToggle"
+                    AutomationProperties.Name="Show floating badge"
+                    Click="OnBadgeToggleClick"
+                    Content="Badge"
+                    ToolTipService.ToolTip="Show a small always-on-top progress badge" />
+                <Button
+                    x:Name="ExitButton"
+                    Width="36"
+                    Height="36"
+                    Padding="6"
+                    AutomationProperties.AutomationId="TrayExitButton"
+                    AutomationProperties.Name="Exit Clipboard Next"
+                    Click="OnExitClick"
+                    Style="{StaticResource SubtleButtonStyle}"
+                    ToolTipService.ToolTip="Exit Clipboard Next">
+                    <FontIcon FontSize="16" Glyph="&#xE7E8;" />
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

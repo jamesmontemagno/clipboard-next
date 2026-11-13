@@ -3,3 +3,7 @@ build/
 DerivedData/
 *.xcuserstate
 xcuserdata/
+
+# Local Microsoft Store uploads built from windows/ (see windows/packaging/README.md)
+artifacts/
+/.vs

@@ -1,0 +1,120 @@
+name: Windows Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'windows/**'
+      - 'global.json'
+      - '.github/workflows/windows-build.yml'
+      - '!**/*.md'
+  pull_request:
+    paths:
+      - 'windows/**'
+      - 'global.json'
+      - '.github/workflows/windows-build.yml'
+      - '!**/*.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # Manual runs share the selected branch's push group; PRs keep their own group.
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  APP_PROJECT: windows/src/ClipboardNext.App/ClipboardNext.App.csproj
+  TEST_PROJECT: windows/tests/ClipboardNext.Core.Tests/ClipboardNext.Core.Tests.csproj
+
+jobs:
+  test:
+    name: Core tests
+    # The core library is plain .NET, so its tests do not need a Windows runner.
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Run tests
+        run: dotnet test ${{ env.TEST_PROJECT }} -c Release
+
+  build:
+    name: Build Store package (${{ matrix.platform }})
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: x64
+            rid: win-x64
+            architecture: x64
+          - platform: ARM64
+            rid: win-arm64
+            architecture: arm64
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Place NuGet caches in runner temp
+        if: runner.environment == 'github-hosted'
+        shell: pwsh
+        run: |
+          $packages = Join-Path $env:RUNNER_TEMP 'nuget\packages'
+          $httpCache = Join-Path $env:RUNNER_TEMP 'nuget\http-cache'
+          New-Item -ItemType Directory -Force -Path $packages, $httpCache | Out-Null
+          "NUGET_PACKAGES=$packages" >> $env:GITHUB_ENV
+          "NUGET_HTTP_CACHE_PATH=$httpCache" >> $env:GITHUB_ENV
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore for ${{ matrix.platform }}
+        run: >-
+          dotnet restore ${{ env.APP_PROJECT }}
+          -p:Configuration=Release
+          -p:Platform=${{ matrix.platform }}
+          -p:RuntimeIdentifier=${{ matrix.rid }}
+
+      # Compiles the app and its XAML and packages an unsigned MSIX exactly as the Store build
+      # does, one architecture at a time. The Store signs the real package; nothing is signed here.
+      - name: Build and package for ${{ matrix.platform }}
+        shell: pwsh
+        run: |
+          $packageDirectory = Join-Path (Resolve-Path ".") "artifacts/windows-${{ matrix.architecture }}/"
+          New-Item -ItemType Directory -Force $packageDirectory | Out-Null
+
+          dotnet build $env:APP_PROJECT `
+            -c Release `
+            -p:Platform=${{ matrix.platform }} `
+            -p:RuntimeIdentifier=${{ matrix.rid }} `
+            -p:PublishAot=false `
+            -p:SelfContained=false `
+            -p:WindowsAppSDKSelfContained=false `
+            -p:PublishTrimmed=false `
+            -p:EnableMsixTooling=true `
+            -p:GenerateAppxPackageOnBuild=true `
+            -p:AppxPackageDir=$packageDirectory `
+            -p:AppxBundle=Never `
+            -p:UapAppxPackageBuildMode=SideloadOnly `
+            -p:AppxPackageSigningEnabled=false `
+            -p:AppxSymbolPackageEnabled=false `
+            --no-restore `
+            -v:minimal
+          if ($LASTEXITCODE -ne 0) { throw "Windows package build failed." }
+
+          $msix = Get-ChildItem $packageDirectory -Recurse -Filter *.msix |
+            Where-Object { $_.Name -notmatch "symbols" } |
+            Select-Object -First 1
+          if (-not $msix) { throw "The build produced no MSIX package." }
+          Write-Host "Packaged $($msix.Name) ($([math]::Round($msix.Length / 1MB, 1)) MiB)"

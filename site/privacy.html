@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy · Clipboard Next</title>
+  <meta name="description" content="Clipboard Next collects nothing. Your queue stays on your device, and the app makes no network connections.">
+  <meta name="theme-color" content="#0d0f1a">
+  <link rel="canonical" href="https://clipboardnext.com/privacy.html">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="nav">
+    <a class="brand" href="./"><img src="assets/logo.svg" alt="" width="28" height="28"> Clipboard Next</a>
+    <nav aria-label="Primary">
+      <a href="./#how">How it works</a>
+      <a href="./#features">Features</a>
+      <a href="./#download">Download</a>
+      <a href="https://github.com/jamesmontemagno/clipboard-next">GitHub</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="section privacy policy">
+      <h1>Privacy</h1>
+      <p class="fine">Last updated November 13, 2026. Applies to Clipboard Next for macOS and Clipboard Next for Windows.</p>
+      <p>Clipboard Next does not collect, transmit, sell, or share any personal data. There are no accounts, no analytics, no telemetry, no ads, and no cloud sync. The app makes no network connections.</p>
+
+      <h2>What stays on your device</h2>
+      <p>Your queue (the text and optional titles of your snippets) and a few preferences, such as the paste delay and the floating badge's position, are saved in plain files on your device:</p>
+      <p>macOS: <code>~/Library/Application Support/ClipboardNext</code><br>
+        Windows: the app's own storage, shown to the app as <code>%LOCALAPPDATA%\ClipboardNext</code>, which Windows removes when you uninstall.</p>
+      <p>These files are not encrypted, so avoid putting passwords or other secrets in a queue. On Windows the app also keeps a small local log of unexpected errors. It records technical details of the error only, never your snippets or anything you type.</p>
+
+      <h2>Your clipboard</h2>
+      <p>Clipboard Next places the snippets you queued on your clipboard, one at a time. To pause when another app copies something, it watches a counter the system keeps for clipboard changes. On Windows, when that counter changes, the app compares the clipboard's text with the current snippet to tell a real change from the same text being republished. That comparison happens in memory; the clipboard's contents are never saved or sent anywhere.</p>
+
+      <h2>Your keyboard</h2>
+      <p>Advancing automatically when you paste is optional, and stays off until you turn it on. When it is on, the app listens for the paste shortcut and nothing else. It never records, stores, transmits, changes, or blocks a keystroke.</p>
+      <p>On macOS this uses a listen-only event tap, which requires the Input Monitoring permission you grant in System Settings, and it reacts only to Command-V. On Windows it uses a listen-only keyboard hook that looks at keys only while a queue is running, and then only at the V and Insert keys, to recognize Ctrl+V and, if you turn them on, Ctrl+Shift+V and Shift+Insert. You can turn it off at any time and advance with the Next button instead.</p>
+
+      <h2>Stores and downloads</h2>
+      <p>The app itself sends us nothing. The services you get it from have their own privacy policies: GitHub and Homebrew for macOS, and the Microsoft Store for Windows. The Microsoft Store may show us aggregated, non-identifying figures such as install counts and crash rates.</p>
+
+      <h2>Questions and changes</h2>
+      <p>Clipboard Next is open source, so everything above can be checked in the <a href="https://github.com/jamesmontemagno/clipboard-next">source code</a>. For questions, <a href="https://github.com/jamesmontemagno/clipboard-next/issues">open an issue on GitHub</a>. If this policy changes, the new version will be posted on this page.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Made for presenters by <a href="https://github.com/jamesmontemagno">James Montemagno</a>. <a href="https://github.com/jamesmontemagno/clipboard-next">Source on GitHub</a>. <a href="./">Home</a>.</p>
+  </footer>
+</body>
+</html>

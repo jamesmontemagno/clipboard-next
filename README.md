@@ -2,7 +2,7 @@
 
 A small, local-only Swift macOS menu bar app for demo presenters. Prepare commands or prompts, press Start, and paste them one at a time without returning to your notes.
 
-Website: <https://clipboardnext.com/> · A Windows version is planned.
+Website: <https://clipboardnext.com/> · A Windows version is in progress: see [Windows](#windows).
 
 ## Install
 
@@ -87,11 +87,26 @@ Releases follow the tiny-clips pattern. Pushing a tag like `v1.0.0-mac` (or runn
 
 Required repository secrets: `APPLE_MACOS_DIRECT_CERTIFICATE_P12` (base64-encoded Developer ID Application `.p12`), `APPLE_MACOS_DIRECT_CERTIFICATE_PASSWORD`, `APPLE_REFRACTORED_KEY_ID`, `APPLE_REFRACTORED_ISSUER_ID`, and `APPLE_REFRACTORED_P8_KEY` (the App Store Connect API private key). The workflow generates a temporary keychain password; the Apple team ID is already configured in the Xcode project. The installer certificate secrets are not needed because the release is a ZIP containing the signed app, not a `.pkg`. Allow GitHub Actions to create pull requests in repository settings.
 
-[`.github/workflows/build.yml`](.github/workflows/build.yml) builds and tests every push and PR (ad-hoc signed, no secrets).
+[`.github/workflows/build.yml`](.github/workflows/build.yml) builds and tests every push and PR that touches the macOS app (ad-hoc signed, no secrets).
+
+## Windows
+
+A native Windows port lives in [`windows/`](windows/): a WinUI 3 app in the taskbar's notification area, with the same queue, Markdown import, paste detection (Ctrl+V), and floating badge. It is a work in progress and will be distributed only through the Microsoft Store.
+
+- [`windows/README.md`](windows/README.md): how it works, how it differs from the macOS app, and how to build, run, and test it.
+- [`windows/docs/microsoft-store-listing.md`](windows/docs/microsoft-store-listing.md): the Store listing and the submission and release process.
+
+The queue logic is a direct port of the Swift code, and `queue.json` has the same format on both platforms. Its tests run on any OS:
+
+```sh
+dotnet test windows/tests/ClipboardNext.Core.Tests/ClipboardNext.Core.Tests.csproj
+```
+
+[`.github/workflows/windows-build.yml`](.github/workflows/windows-build.yml) tests and packages the Windows app on pushes and PRs that touch `windows/`. Windows releases use their own tags (`v1.0.0-windows`), which run [`.github/workflows/windows-store-publish.yml`](.github/workflows/windows-store-publish.yml): the Store upload goes to an Internal Testing flight first, and to the public listing only after a second approval.
 
 ## Website
 
-The static site lives in [`site/`](site/) and deploys through [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) on pushes to `main` that touch `site/`. Enable it once in **Settings → Pages → Source: GitHub Actions**, then set **Custom domain** to `clipboardnext.com` and turn on **Enforce HTTPS**. Workflow-based deploys ignore `site/CNAME`, so the Settings field is what binds the domain; the file is only a reference. Preview locally with `cd site && python3 -m http.server 8765`. The Windows download card is a "Coming soon" placeholder.
+The static site lives in [`site/`](site/) and deploys through [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) on pushes to `main` that touch `site/`. Enable it once in **Settings → Pages → Source: GitHub Actions**, then set **Custom domain** to `clipboardnext.com` and turn on **Enforce HTTPS**. Workflow-based deploys ignore `site/CNAME`, so the Settings field is what binds the domain; the file is only a reference. Preview locally with `cd site && python3 -m http.server 8765`. The Windows download card is a "Coming soon" placeholder until the Store listing is live. [`site/privacy.html`](site/privacy.html) is the privacy policy the Microsoft Store listing links to; keep it in step with what the apps actually do.
 
 ## Tests
 

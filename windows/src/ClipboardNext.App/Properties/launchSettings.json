@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "ClipboardNext.App (Package)": {
+      "commandName": "MsixPackage"
+    }
+  }
+}

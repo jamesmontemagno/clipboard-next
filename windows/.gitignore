@@ -1,0 +1,26 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.binlog
+
+# Visual Studio
+.vs/
+
+# MSIX / packaging output (the Store signs the package; nothing signed is ever committed)
+AppPackages/
+BundleArtifacts/
+artifacts/
+*.appx
+*.appxbundle
+*.appxupload
+*.msix
+*.msixbundle
+*.msixupload
+*.cer
+*.pfx
+
+# Test / coverage
+TestResults/
+[Cc]overage*/
