@@ -54,4 +54,32 @@ final class MarkdownImportTests: XCTestCase {
         let items = try MarkdownImport.parse("~~~sh\n```\n~~~not a close\n~~~", wholeBlocks: true)
         XCTAssertEqual(items.first?.snippet.text, "```\n~~~not a close")
     }
+
+    func testPlainTextPreservesLinesWhitespaceAndDuplicatesWithoutTitles() throws {
+        for separator in ["\n", "\r\n", "\r"] {
+            let source = ["", "  echo \"hello\" \t", " \t ", "echo repeat", "echo repeat", ""]
+                .joined(separator: separator)
+            let items = try PlainTextImport.parse(source)
+            XCTAssertEqual(items.map(\.snippet.text), ["  echo \"hello\" \t", "echo repeat", "echo repeat"])
+            XCTAssertTrue(items.allSatisfy { $0.selected && $0.snippet.title.isEmpty && $0.context.isEmpty })
+            XCTAssertEqual(Set(items.map(\.snippet.id)).count, 3)
+        }
+        let mixed = try PlainTextImport.parse("one\r\ntwo\rthree\nfour")
+        XCTAssertEqual(mixed.map(\.snippet.text), ["one", "two", "three", "four"])
+    }
+
+    func testPlainTextTreatsMarkdownSyntaxLiterally() throws {
+        let items = try PlainTextImport.parse("# Heading\n> prompt\n```sh\necho hello")
+        XCTAssertEqual(items.map(\.snippet.text), ["# Heading", "> prompt", "```sh", "echo hello"])
+        XCTAssertTrue(items.allSatisfy { $0.selected && $0.snippet.title.isEmpty })
+    }
+
+    func testPlainTextRejectsEmptyOrWhitespaceOnlyInputWithSpecificError() {
+        for source in ["", " \t", "\r\n \t\r\n"] {
+            XCTAssertThrowsError(try PlainTextImport.parse(source)) { error in
+                XCTAssertTrue(error is PlainTextImportError)
+                XCTAssertTrue(error.localizedDescription.contains("nonblank lines"))
+            }
+        }
+    }
 }

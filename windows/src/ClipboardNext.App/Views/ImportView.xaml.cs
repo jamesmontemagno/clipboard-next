@@ -1,4 +1,5 @@
 using ClipboardNext.Core;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -8,34 +9,44 @@ using WinRT.Interop;
 namespace ClipboardNext.App;
 
 /// <summary>
-/// The Markdown import page of the editor: paste or open presenter notes, preview the snippets
+/// The import page of the editor: paste or open source text, preview the snippets
 /// found in them, choose which to keep, and append them to the queue or replace it.
 /// </summary>
 public sealed partial class ImportView : UserControl
 {
     private DemoQueue? _queue;
+    private AppSettings? _settings;
     private nint _ownerWindow;
     private Action? _close;
     private IReadOnlyList<ImportCandidate> _candidates = [];
+    private bool _ready;
 
     public ImportView()
     {
         InitializeComponent();
-        UpdateState();
+        _ready = true;
+        UpdateFormat();
     }
 
     /// <summary>Connects the page to the queue it imports into.</summary>
     /// <param name="queue">The queue that receives the chosen snippets.</param>
+    /// <param name="settings">The preferences that remember the selected format.</param>
     /// <param name="ownerWindow">The handle of the window hosting the page, for the file picker.</param>
     /// <param name="close">Returns to the queue page.</param>
-    internal void Attach(DemoQueue queue, nint ownerWindow, Action close)
+    internal void Attach(DemoQueue queue, AppSettings settings, nint ownerWindow, Action close)
     {
         _queue = queue;
+        _settings = settings;
         _ownerWindow = ownerWindow;
         _close = close;
+        _ready = false;
+        ImportFormatSelector.SelectedItem = settings.ImportFormat == ImportFormat.PlainText
+            ? PlainTextFormatItem : MarkdownFormatItem;
+        _ready = true;
+        UpdateFormat();
     }
 
-    /// <summary>Starts a fresh import: no notes, no preview, lines split into separate snippets.</summary>
+    /// <summary>Starts a fresh import with the remembered format, no source text, and no preview.</summary>
     internal void Begin()
     {
         MarkdownBox.Text = string.Empty;
@@ -68,7 +79,42 @@ public sealed partial class ImportView : UserControl
         ErrorBar.IsOpen = true;
     }
 
-    // A preview describes the notes as they were; any edit makes it stale.
+    private ImportFormat Format => ImportFormatSelector.SelectedItem == PlainTextFormatItem
+        ? ImportFormat.PlainText : ImportFormat.Markdown;
+
+    private void OnFormatChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    {
+        if (!_ready)
+        {
+            return;
+        }
+
+        if (_settings is { } settings)
+        {
+            settings.ImportFormat = Format;
+        }
+
+        UpdateFormat();
+    }
+
+    private void UpdateFormat()
+    {
+        var markdown = Format == ImportFormat.Markdown;
+        WholeBlocksCheck.Visibility = markdown ? Visibility.Visible : Visibility.Collapsed;
+        MarkdownBox.PlaceholderText = markdown
+            ? "Paste your Markdown presenter notes here, or open a file."
+            : "Paste plain text here, one item per line, or open a file.";
+        AutomationProperties.SetName(MarkdownBox, markdown ? "Markdown presenter notes" : "Plain text, one item per line");
+        PreviewGuidanceText.Text = markdown
+            ? "Code blocks are selected by default. Blockquoted prompts are optional."
+            : "Each nonblank line becomes an untitled snippet, selected by default.";
+        ImportHelpText.Text = markdown
+            ? "By default, each nonblank code line becomes a snippet. Splitting is not shell-aware: keep whole blocks for continuations or scripts. Review commands before pasting."
+            : "Each nonblank line becomes an untitled snippet. Whitespace and repeated lines are kept. Review commands before pasting.";
+        ClearPreview();
+    }
+
+    // A preview describes the source as it was; any edit makes it stale.
     private void OnMarkdownChanged(object sender, TextChangedEventArgs e) => ClearPreview();
 
     private void OnWholeBlocksChanged(object sender, RoutedEventArgs e) => ClearPreview();
@@ -78,9 +124,11 @@ public sealed partial class ImportView : UserControl
         ClearPreview();
         try
         {
-            _candidates = MarkdownImport.Parse(MarkdownBox.Text, WholeBlocksCheck.IsChecked == true);
+            _candidates = Format == ImportFormat.Markdown
+                ? MarkdownImport.Parse(MarkdownBox.Text, WholeBlocksCheck.IsChecked == true)
+                : PlainTextImport.Parse(MarkdownBox.Text);
         }
-        catch (MarkdownImportException ex)
+        catch (Exception ex) when (ex is MarkdownImportException or PlainTextImportException)
         {
             ShowError(ex.Message);
             return;
@@ -97,11 +145,14 @@ public sealed partial class ImportView : UserControl
     private CheckBox CreateRow(ImportCandidate candidate)
     {
         var content = new StackPanel { Spacing = 4 };
-        content.Children.Add(new TextBlock
+        if (!string.IsNullOrEmpty(candidate.Context))
         {
-            Text = candidate.Context,
-            Style = AppStyles.Get("SecondaryCaptionTextStyle"),
-        });
+            content.Children.Add(new TextBlock
+            {
+                Text = candidate.Context,
+                Style = AppStyles.Get("SecondaryCaptionTextStyle"),
+            });
+        }
         content.Children.Add(new TextBlock
         {
             Text = candidate.Snippet.Text,
@@ -148,7 +199,7 @@ public sealed partial class ImportView : UserControl
         }
         catch (Exception ex)
         {
-            ShowError($"Could not open Markdown: {ex.Message}");
+            ShowError($"Could not open file: {ex.Message}");
         }
     }
 

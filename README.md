@@ -45,11 +45,13 @@ The Release build supports Apple Silicon and Intel. Find the clipboard icon in t
 
 ## Prepare a demo
 
-1. Add a snippet and enter its text, or choose **Import Markdown**. Snippets are numbered; there are no titles to manage.
-2. Paste your presenter notes or open a UTF-8 Markdown file, then press **Preview**.
-3. Review the candidates in source order. Fenced code blocks are selected by default; blockquoted prompts (`>`) are unchecked. Headings and language labels provide context but are not copied.
-4. By default, each nonblank code line becomes one snippet. Enable **Keep each code block as one multiline snippet** for multiline commands, scripts, or shell continuations. Splitting is not shell-aware.
+1. Add a snippet and enter its text, or choose **Import**.
+2. Choose **Markdown** or **Plain Text** at the top, then paste your text or open a UTF-8 file and press **Preview**. The format is remembered across imports and app launches; the initial default is Markdown. The selected format, not the file extension, controls parsing.
+3. **Markdown:** fenced code blocks are selected by default; blockquoted prompts (`>`) are unchecked. Headings become optional snippet titles and language labels provide preview context; neither is copied. Each nonblank code line becomes one snippet unless you enable **Keep each code block as one multiline snippet** for multiline commands, scripts, or shell continuations. Splitting is not shell-aware.
+4. **Plain Text:** each nonblank line becomes a selected snippet with no title. Spaces, tabs, source order, and repeated lines are preserved; blank lines are skipped. Markdown syntax is treated literally, and the whole-code-block option does not apply.
 5. Append selected candidates, or confirm replacing the queue. Edit, delete, or move snippets up/down before starting.
+
+Switching formats keeps your source text but clears the preview and any parsing error. Press **Preview** again before importing.
 
 For the TheaterLog script, select the commands needed for your chosen demo path, leaving troubleshooting commands unselected unless needed. Optional Copilot prompts appear separately. PowerShell commands remain PowerShell commands; import never converts shell syntax.
 
@@ -101,7 +103,7 @@ Required repository secrets: `APPLE_MACOS_DIRECT_CERTIFICATE_P12` (base64-encode
 
 ## Windows
 
-A native Windows port lives in [`windows/`](windows/): a WinUI 3 app in the taskbar's notification area, with the same queue, Markdown import, paste detection (Ctrl+V), and floating badge. It is available exclusively through the [Microsoft Store](https://apps.microsoft.com/detail/9NCXV6W499WM).
+A native Windows port lives in [`windows/`](windows/): a WinUI 3 app in the taskbar's notification area, with the same queue, Markdown and plain-text import, paste detection (Ctrl+V), and floating badge. It is available exclusively through the [Microsoft Store](https://apps.microsoft.com/detail/9NCXV6W499WM).
 
 - [`windows/README.md`](windows/README.md): how it works, how it differs from the macOS app, and how to build, run, and test it.
 - [`windows/docs/microsoft-store-listing.md`](windows/docs/microsoft-store-listing.md): the Store listing and the submission and release process.
@@ -127,7 +129,7 @@ xcodebuild -project ClipboardNext.xcodeproj -scheme ClipboardNext \
   -destination 'platform=macOS,arch=arm64' -derivedDataPath build test
 ```
 
-On Intel, use `arch=x86_64`. Tests cover Markdown import and queue behavior using a fake clipboard and deterministic deferred callbacks, including repeated keys, canceled work, external copies, final-item behavior, and persistence protection.
+On Intel, use `arch=x86_64`. Tests cover Markdown and plain-text import and queue behavior using a fake clipboard and deterministic deferred callbacks, including repeated keys, canceled work, external copies, final-item behavior, and persistence protection.
 
 For a live permission-dependent check, add three harmless snippets, start, and paste into a blank text document (not a shell). Confirm the first snippet appears before the next becomes available, the optional badge flashes without stealing focus, the third paste finishes, and copying unrelated text pauses the queue. This interactive check requires granting Input Monitoring on your Mac.
 

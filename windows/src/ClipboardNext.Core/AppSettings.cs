@@ -15,6 +15,8 @@ internal sealed class AppSettingsData
     public bool PasteDetectionEnabled { get; set; }
 
     public bool DetectTerminalPasteShortcuts { get; set; }
+
+    public ImportFormat ImportFormat { get; set; }
 }
 
 /// <summary>
@@ -88,6 +90,16 @@ public sealed class AppSettings
         set
         {
             _data.DetectTerminalPasteShortcuts = value;
+            Save();
+        }
+    }
+
+    public ImportFormat ImportFormat
+    {
+        get => _data.ImportFormat;
+        set
+        {
+            _data.ImportFormat = value;
             Save();
         }
     }

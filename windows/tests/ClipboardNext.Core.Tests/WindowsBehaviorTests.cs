@@ -72,20 +72,44 @@ public sealed class WindowsBehaviorTests : IDisposable
         Assert.False(settings.ShowFloatingBadge);
         Assert.Null(settings.BadgePosition);
         Assert.Null(settings.AdvanceDelayMilliseconds);
+        Assert.Equal(ImportFormat.Markdown, settings.ImportFormat);
 
         settings.PasteDetectionEnabled = true;
         settings.DetectTerminalPasteShortcuts = true;
         settings.ShowFloatingBadge = true;
         settings.BadgePosition = (-1200, 48);
+        settings.ImportFormat = ImportFormat.PlainText;
 
         var restored = new AppSettings(path);
         Assert.True(restored.PasteDetectionEnabled);
         Assert.True(restored.DetectTerminalPasteShortcuts);
         Assert.True(restored.ShowFloatingBadge);
         Assert.Equal((-1200, 48), restored.BadgePosition);
+        Assert.Equal(ImportFormat.PlainText, restored.ImportFormat);
 
         restored.BadgePosition = null;
+        restored.ImportFormat = ImportFormat.Markdown;
         Assert.Null(new AppSettings(path).BadgePosition);
+        Assert.Equal(ImportFormat.Markdown, new AppSettings(path).ImportFormat);
+    }
+
+    [Fact]
+    public void SettingsWithoutImportFormatKeepExistingPreferencesAndDefaultToMarkdown()
+    {
+        Directory.CreateDirectory(_directory);
+        var path = Path.Combine(_directory, "settings.json");
+        File.WriteAllText(path, """{"showFloatingBadge":true,"detectTerminalPasteShortcuts":true}""");
+
+        var settings = new AppSettings(path);
+        Assert.Equal(ImportFormat.Markdown, settings.ImportFormat);
+        Assert.True(settings.ShowFloatingBadge);
+        Assert.True(settings.DetectTerminalPasteShortcuts);
+
+        settings.ImportFormat = ImportFormat.PlainText;
+        var restored = new AppSettings(path);
+        Assert.Equal(ImportFormat.PlainText, restored.ImportFormat);
+        Assert.True(restored.ShowFloatingBadge);
+        Assert.True(restored.DetectTerminalPasteShortcuts);
     }
 
     [Fact]

@@ -1,5 +1,10 @@
 import Foundation
 
+enum ImportFormat: String {
+    case markdown
+    case plainText
+}
+
 struct ImportCandidate: Identifiable {
     let id = UUID()
     var selected: Bool

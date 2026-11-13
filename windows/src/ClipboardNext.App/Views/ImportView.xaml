@@ -4,9 +4,10 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!--  Markdown import: paste or open presenter notes, preview the snippets found, then append or replace.  -->
+    <!--  Paste or open source text, preview the snippets found, then append or replace.  -->
     <Grid Padding="24,8,24,16" RowSpacing="12">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -37,21 +38,39 @@
                 Grid.Column="1"
                 VerticalAlignment="Center"
                 Style="{StaticResource TitleTextBlockStyle}"
-                Text="Import presenter notes" />
+                Text="Import snippets" />
             <Button
                 Grid.Column="2"
                 VerticalAlignment="Center"
                 AutomationProperties.AutomationId="OpenMarkdownFileButton"
-                AutomationProperties.Name="Open Markdown file"
+                AutomationProperties.Name="Open file"
                 Click="OnOpenFileClick">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <FontIcon FontSize="14" Glyph="&#xE8E5;" />
-                    <TextBlock Text="Open Markdown file…" />
+                    <TextBlock Text="Open file…" />
                 </StackPanel>
             </Button>
         </Grid>
 
-        <Grid Grid.Row="1" ColumnSpacing="16">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12">
+            <TextBlock VerticalAlignment="Center" Text="Format" />
+            <SelectorBar
+                x:Name="ImportFormatSelector"
+                AutomationProperties.AutomationId="ImportFormatSelector"
+                AutomationProperties.Name="Import format"
+                SelectionChanged="OnFormatChanged">
+                <SelectorBarItem
+                    x:Name="MarkdownFormatItem"
+                    AutomationProperties.AutomationId="MarkdownFormatItem"
+                    Text="Markdown" />
+                <SelectorBarItem
+                    x:Name="PlainTextFormatItem"
+                    AutomationProperties.AutomationId="PlainTextFormatItem"
+                    Text="Plain Text" />
+            </SelectorBar>
+        </StackPanel>
+
+        <Grid Grid.Row="2" ColumnSpacing="16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="300" />
                 <ColumnDefinition Width="*" MinWidth="340" />
@@ -90,6 +109,7 @@
                             Style="{StaticResource BodyStrongTextBlockStyle}"
                             Text="Preview before importing" />
                         <TextBlock
+                            x:Name="PreviewGuidanceText"
                             HorizontalAlignment="Center"
                             HorizontalTextAlignment="Center"
                             Style="{StaticResource SecondaryCaptionTextStyle}"
@@ -102,26 +122,27 @@
 
         <CheckBox
             x:Name="WholeBlocksCheck"
-            Grid.Row="2"
+            Grid.Row="3"
             AutomationProperties.AutomationId="WholeBlocksCheck"
             Checked="OnWholeBlocksChanged"
             Content="Keep each code block as one multiline snippet"
             Unchecked="OnWholeBlocksChanged" />
 
         <TextBlock
-            Grid.Row="3"
+            x:Name="ImportHelpText"
+            Grid.Row="4"
             Style="{StaticResource SecondaryCaptionTextStyle}"
             Text="By default, each nonblank code line becomes a snippet. Splitting is not shell-aware: keep whole blocks for continuations or scripts. Review commands before pasting."
             TextWrapping="Wrap" />
 
         <InfoBar
             x:Name="ErrorBar"
-            Grid.Row="4"
+            Grid.Row="5"
             AutomationProperties.AutomationId="ImportErrorBar"
             IsClosable="False"
             Severity="Error" />
 
-        <Grid Grid.Row="5" ColumnSpacing="8">
+        <Grid Grid.Row="6" ColumnSpacing="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />

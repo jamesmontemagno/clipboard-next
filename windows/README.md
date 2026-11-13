@@ -9,12 +9,21 @@ It is distributed **only through the Microsoft Store**, as a packaged (MSIX) app
 ## Using it
 
 - **Tray icon.** Click it (either button) for the quick popup: status, the current and next snippet, **Back / Start · Pause · Resume / Next**, the floating badge toggle, **Open editor**, and **Exit**. A green dot on the icon marks a running queue, the tooltip shows progress such as `3 of 12`, and the icon flashes a checkmark when a paste is detected.
-- **Editor.** Opens on a normal launch and from the tray. Add, edit, delete, and reorder snippets; **Start here** begins from the selected one; **Import Markdown** turns presenter notes into snippets. Closing the editor keeps the app running in the tray.
+- **Editor.** Opens on a normal launch and from the tray. Add, edit, delete, and reorder snippets; **Start here** begins from the selected one; **Import** turns Markdown or plain text into snippets. Closing the editor keeps the app running in the tray.
 - **Paste detection** is off until you turn it on (in the editor's notice bar, the tray popup, or **Settings**). Then each **Ctrl+V** copies the next snippet after the **Next after** delay (0.10–3.00 s, default 0.35 s). Turn on **Terminal paste shortcuts** in Settings to also count **Ctrl+Shift+V** and **Shift+Insert**.
 - **Floating badge.** An optional always-on-top `3/12` badge that never takes keyboard focus. Drag it anywhere on any display; **Reset position** puts it back in the top-right corner, and it returns there by itself if its display is unplugged.
 - **Start with Windows** (Settings) starts the app quietly in the tray at sign-in.
 
 If another app changes the clipboard, the queue pauses and leaves that content alone; **Resume** copies the current snippet again. Commands are copied as plain text, never executed, and the app never presses Enter.
+
+### Importing snippets
+
+Choose **Import**, then select **Markdown** or **Plain Text** at the top. The format is remembered across imports and app launches, with Markdown as the initial default. Paste your text or open a UTF-8 `.md`, `.markdown`, or `.txt` file; the selector controls parsing, not the file extension.
+
+- **Markdown:** code blocks are selected by default, blockquoted prompts are optional, and headings supply optional titles. Each nonblank code line becomes a snippet unless **Keep each code block as one multiline snippet** is enabled.
+- **Plain Text:** each nonblank line becomes a selected snippet with no title. Whitespace, source order, and repeated lines are preserved. Markdown-looking lines are ordinary text; the whole-code-block option is hidden.
+
+Press **Preview**, review and select candidates, then append them or confirm replacing the queue. Changing formats keeps your input but clears the preview and parsing error; preview again before importing.
 
 ## How it differs from the macOS app
 
@@ -24,7 +33,7 @@ If another app changes the clipboard, the queue pauses and leaves that content a
 | Paste shortcut | Command-V | Ctrl+V, plus optional Ctrl+Shift+V and Shift+Insert |
 | Detection | Listen-only event tap; needs the Input Monitoring permission | Listen-only low-level keyboard hook; no system permission, but off until you turn it on |
 | Progress while running | Text in the menu bar | Tray tooltip, a dot on the tray icon, and the badge |
-| Confirmations and settings | Dialogs and sheets | Flyouts; Markdown import is a page inside the editor |
+| Confirmations and settings | Dialogs and sheets | Flyouts; import is a page inside the editor |
 | Line endings | LF | LF in the queue file; CR LF on the clipboard, as Windows apps expect |
 | Storage | `~/Library/Application Support/ClipboardNext` | `%LOCALAPPDATA%\ClipboardNext` (redirected into the package's storage; removed on uninstall) |
 | Distribution | Homebrew cask and GitHub Releases | Microsoft Store only |
@@ -58,7 +67,7 @@ windows/
   ClipboardNext.Windows.slnx     Solution
   Directory.Build.props          Shared build settings
   src/
-    ClipboardNext.Core/          UI-free logic: queue, Markdown import, settings, paste rules (plain .NET)
+    ClipboardNext.Core/          UI-free logic: queue, snippet import, settings, paste rules (plain .NET)
     ClipboardNext.App/           WinUI 3 packaged app: tray icon, popup, editor, badge, keyboard hook
   tests/
     ClipboardNext.Core.Tests/    xUnit tests, ported from the macOS tests (run on any OS)
@@ -89,7 +98,7 @@ dotnet test windows/tests/ClipboardNext.Core.Tests/ClipboardNext.Core.Tests.cspr
 
 Start the app through `dotnet run` or Visual Studio's **Package** profile rather than by double-clicking the built `.exe`: it is a packaged app and expects package identity.
 
-The tests cover Markdown import and queue behavior with a fake clipboard and deterministic deferred callbacks (repeated keys, canceled work, external copies, final-item behavior, persistence protection, and reading the macOS file format), plus the Windows-only rules: which shortcuts count as a paste, badge placement across displays, and settings.
+The tests cover Markdown and plain-text import and queue behavior with a fake clipboard and deterministic deferred callbacks (repeated keys, canceled work, external copies, final-item behavior, persistence protection, and reading the macOS file format), plus the Windows-only rules: which shortcuts count as a paste, badge placement across displays, and settings, including the remembered import format.
 
 For a live check, add three harmless snippets, turn on paste detection, start, and paste into Notepad (not a shell). Confirm the first snippet appears before the next becomes available, the badge flashes without taking focus, the third paste finishes the queue, and copying unrelated text pauses it.
 

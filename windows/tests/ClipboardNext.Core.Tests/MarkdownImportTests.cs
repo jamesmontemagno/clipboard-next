@@ -70,6 +70,50 @@ public sealed class MarkdownImportTests
         Assert.Equal("```\n~~~not a close", items[0].Snippet.Text);
     }
 
+    [Theory]
+    [InlineData("\n")]
+    [InlineData("\r\n")]
+    [InlineData("\r")]
+    public void PlainTextPreservesLinesWhitespaceAndDuplicatesWithoutTitles(string separator)
+    {
+        var source = string.Join(separator, new[] { "", "  echo \"hello\" \t", " \t ", "echo repeat", "echo repeat", "" });
+        var items = PlainTextImport.Parse(source);
+        Assert.Equal(
+            new[] { "  echo \"hello\" \t", "echo repeat", "echo repeat" },
+            items.Select(item => item.Snippet.Text).ToArray());
+        Assert.All(items, item =>
+        {
+            Assert.True(item.Selected);
+            Assert.Empty(item.Snippet.Title);
+            Assert.Empty(item.Context);
+        });
+        Assert.Equal(3, items.Select(item => item.Snippet.Id).Distinct().Count());
+    }
+
+    [Fact]
+    public void PlainTextAcceptsMixedLineEndingsAndTreatsMarkdownSyntaxLiterally()
+    {
+        var items = PlainTextImport.Parse("# Heading\r\n> prompt\r```sh\necho hello");
+        Assert.Equal(
+            new[] { "# Heading", "> prompt", "```sh", "echo hello" },
+            items.Select(item => item.Snippet.Text).ToArray());
+        Assert.All(items, item =>
+        {
+            Assert.True(item.Selected);
+            Assert.Empty(item.Snippet.Title);
+        });
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" \t")]
+    [InlineData("\r\n \t\r\n")]
+    public void PlainTextRejectsEmptyOrWhitespaceOnlyInputWithSpecificError(string source)
+    {
+        var error = Assert.Throws<PlainTextImportException>(() => PlainTextImport.Parse(source));
+        Assert.Contains("nonblank lines", error.Message);
+    }
+
     [Fact]
     public void FilesMustBeUtf8AndMayStartWithAByteOrderMark()
     {
