@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="ClipboardNext.App.QueueControls"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  Back, Start / Pause / Resume, and Next: the same three buttons in the tray popup and the editor.  -->
+    <Grid ColumnSpacing="6">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Button
+            x:Name="BackButton"
+            Grid.Column="0"
+            HorizontalAlignment="Stretch"
+            AutomationProperties.AutomationId="QueueBackButton"
+            AutomationProperties.Name="Back"
+            Click="OnBackClick"
+            ToolTipService.ToolTip="Put the previous snippet back on the clipboard">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <FontIcon FontSize="14" Glyph="&#xE892;" />
+                <TextBlock Text="Back" />
+            </StackPanel>
+        </Button>
+
+        <Button
+            x:Name="PrimaryButton"
+            Grid.Column="1"
+            HorizontalAlignment="Stretch"
+            AutomationProperties.AutomationId="QueuePrimaryButton"
+            Click="OnPrimaryClick"
+            Style="{StaticResource AccentButtonStyle}">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <FontIcon
+                    x:Name="PrimaryIcon"
+                    FontSize="14"
+                    Glyph="&#xE768;" />
+                <TextBlock x:Name="PrimaryText" Text="Start" />
+            </StackPanel>
+        </Button>
+
+        <Button
+            x:Name="NextButton"
+            Grid.Column="2"
+            HorizontalAlignment="Stretch"
+            AutomationProperties.AutomationId="QueueNextButton"
+            AutomationProperties.Name="Next"
+            Click="OnNextClick"
+            ToolTipService.ToolTip="Copy the next snippet without pasting">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <FontIcon FontSize="14" Glyph="&#xE893;" />
+                <TextBlock Text="Next" />
+            </StackPanel>
+        </Button>
+    </Grid>
+</UserControl>

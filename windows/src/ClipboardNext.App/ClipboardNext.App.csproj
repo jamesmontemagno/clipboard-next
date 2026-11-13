@@ -1,0 +1,89 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <Version>1.0.0</Version>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+    <!-- Windows 11 21H2 (22000) and later: Mica, rounded corners, and the tray flyout rely on it. -->
+    <TargetPlatformMinVersion>10.0.22000.0</TargetPlatformMinVersion>
+    <RootNamespace>ClipboardNext.App</RootNamespace>
+    <AssemblyName>ClipboardNext.App</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
+    <Platforms>x64;ARM64</Platforms>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' and '$(Platform)' == 'x64'">win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' and '$(Platform)' == 'ARM64'">win-arm64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString().ToLowerInvariant())</RuntimeIdentifier>
+    <UseWinUI>true</UseWinUI>
+    <WinUISDKReferences>false</WinUISDKReferences>
+    <!--
+      Clipboard Next for Windows ships only through the Microsoft Store, as a packaged (MSIX)
+      app. Package.appxmanifest carries the Store-assigned identity, the Store signs the
+      package, and the Store delivers updates, so there is no unpackaged or sideload flavor.
+    -->
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <!-- Program.cs is the entry point: it enforces a single instance before XAML starts. -->
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <!--
+    Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
+    Tools extension to be activated for this project even if the Windows App SDK Nuget
+    package has not yet been restored.
+  -->
+  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <ProjectCapability Include="Msix" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2526" />
+    <!--
+      Only the Windows App SDK components the app needs. The Store package is framework-dependent:
+      it declares the shared Windows App Runtime, which the Store installs alongside the app.
+    -->
+    <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="1.8.260528001" />
+    <PackageReference Include="Microsoft.WindowsAppSDK.Runtime" Version="1.8.260529003" />
+    <!--
+      CommunityToolkit.WinUI and H.NotifyIcon.WinUI still depend on the 1.6 metapackage.
+      Satisfy that dependency without importing or publishing its legacy SDK assets.
+    -->
+    <PackageReference
+      Include="Microsoft.WindowsAppSDK"
+      Version="1.6.250108002"
+      ExcludeAssets="all"
+      PrivateAssets="all" />
+    <!--
+      Adds `dotnet run` support for packaged WinUI apps: it registers a debug identity through
+      the winapp CLI and launches the app with package identity.
+    -->
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.6.1" />
+    <PackageReference Include="H.NotifyIcon.WinUI" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ClipboardNext.Core\ClipboardNext.Core.csproj" />
+  </ItemGroup>
+
+  <!--
+    Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution
+    Explorer "Package and Publish" context menu entry to be enabled for this project even if
+    the Windows App SDK Nuget package has not yet been restored.
+  -->
+  <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- ReadyToRun pre-compiles IL so the tray popup and editor open without a JIT pause. -->
+    <PublishReadyToRun Condition="'$(PublishReadyToRun)' == '' and '$(Configuration)' == 'Release'">True</PublishReadyToRun>
+    <PublishReadyToRun Condition="'$(PublishReadyToRun)' == ''">False</PublishReadyToRun>
+    <!-- WinUI 3 and H.NotifyIcon rely on reflection that trimming and NativeAOT break. -->
+    <PublishTrimmed>False</PublishTrimmed>
+    <PublishAot>False</PublishAot>
+  </PropertyGroup>
+</Project>

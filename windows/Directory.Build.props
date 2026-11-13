@@ -1,0 +1,18 @@
+<Project>
+
+  <!--
+    Shared build settings for all Clipboard Next Windows projects.
+    Each project declares its own target framework: the app targets Windows, while the
+    core library and its tests are plain .NET so they build and run on any OS.
+  -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Authors>Refractored</Authors>
+    <Company>Refractored LLC</Company>
+    <Product>Clipboard Next</Product>
+    <Copyright>Copyright (c) 2026 Refractored LLC</Copyright>
+  </PropertyGroup>
+
+</Project>

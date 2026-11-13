@@ -3,9 +3,22 @@ name: Build
 on:
   push:
     branches: [main]
-    paths-ignore: ["site/**", "**.md"]
+    # The Windows app has its own workflow (windows-build.yml).
+    paths-ignore:
+      - "site/**"
+      - "**.md"
+      - "windows/**"
+      - "global.json"
+      - ".github/workflows/windows-*.yml"
+      - ".github/actions/**"
   pull_request:
-    paths-ignore: ["site/**", "**.md"]
+    paths-ignore:
+      - "site/**"
+      - "**.md"
+      - "windows/**"
+      - "global.json"
+      - ".github/workflows/windows-*.yml"
+      - ".github/actions/**"
   workflow_dispatch:
 
 permissions:
