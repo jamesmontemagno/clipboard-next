@@ -93,7 +93,7 @@ struct SettingsView: View {
                     section("Startup", icon: "power") {
                         Toggle("Start with Mac", isOn: Binding(
                             get: { loginStatus == .enabled || loginStatus == .requiresApproval },
-                            set: setLaunchAtLogin))
+                            set: { setLaunchAtLogin($0) }))
                             .toggleStyle(.switch)
                         Text("Open Clipboard Next automatically when you sign in.")
                             .font(.caption).foregroundStyle(.secondary)
