@@ -11,6 +11,7 @@
     <!--  The whole badge is the drag surface. Paired elements swap by visibility so every color stays a theme resource.  -->
     <Grid
         x:Name="RootGrid"
+        AllowFocusOnInteraction="False"
         AutomationProperties.AutomationId="FloatingBadge"
         Background="Transparent"
         PointerCanceled="OnPointerCaptureEnded"
@@ -30,12 +31,22 @@
             CornerRadius="8"
             Visibility="Collapsed" />
 
-        <StackPanel
+        <Grid
+            x:Name="BadgeContent"
+            Margin="10,0"
             HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Orientation="Horizontal"
-            Spacing="7">
-            <Grid Width="16" VerticalAlignment="Center">
+            VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition x:Name="TitleColumn" Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid
+                Width="16"
+                Margin="0,0,7,0"
+                VerticalAlignment="Center">
                 <FontIcon
                     x:Name="ClipboardIcon"
                     Glyph="&#xF0E3;"
@@ -47,12 +58,35 @@
                     Visibility="Collapsed" />
             </Grid>
             <TextBlock
+                x:Name="TitleText"
+                Grid.Column="1"
+                Margin="0,0,7,0"
+                VerticalAlignment="Center"
+                FontSize="12"
+                FontWeight="SemiBold"
+                MaxLines="1"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="NoWrap"
+                Visibility="Collapsed" />
+            <TextBlock
+                x:Name="TitleSeparator"
+                Grid.Column="2"
+                Margin="0,0,7,0"
+                VerticalAlignment="Center"
+                FontSize="12"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="&#xB7;"
+                Visibility="Collapsed" />
+            <TextBlock
                 x:Name="PositionText"
+                Grid.Column="3"
+                Margin="0,0,7,0"
                 VerticalAlignment="Center"
                 FontSize="12"
                 FontWeight="SemiBold"
                 Text="0/0" />
             <Grid
+                Grid.Column="4"
                 Width="6"
                 Height="6"
                 VerticalAlignment="Center">
@@ -62,6 +96,6 @@
                     Fill="{ThemeResource SystemFillColorSuccessBrush}"
                     Visibility="Collapsed" />
             </Grid>
-        </StackPanel>
+        </Grid>
     </Grid>
 </Window>

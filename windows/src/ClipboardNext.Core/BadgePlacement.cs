@@ -18,6 +18,7 @@ public readonly record struct PixelRect(int X, int Y, int Width, int Height)
 public static class BadgePlacement
 {
     public const int WidthDip = 104;
+    public const int TitledWidthDip = 246;
     public const int HeightDip = 32;
     public const int MarginDip = 20;
 

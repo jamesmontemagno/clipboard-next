@@ -315,6 +315,80 @@ public sealed class QueueTests : IDisposable
     }
 
     [Fact]
+    public void BadgeTitleFollowsImportedCurrentSnippetThroughTransportAndCompletion()
+    {
+        const string markdown = """
+            # Seed demo data
+            ```sh
+            seed-demo
+            ```
+            # Show results
+            ```sh
+            show-results
+            ```
+            """;
+        Queue.Update(MarkdownImport.Parse(markdown, wholeBlocks: false).Select(candidate => candidate.Snippet));
+        Assert.Equal("", QueuePresentation.BadgeTitle(Queue));
+        Assert.Equal("0/2", QueuePresentation.BadgeText(Queue));
+
+        Queue.Start();
+        Assert.Equal("Seed demo data", QueuePresentation.BadgeTitle(Queue));
+        Assert.Equal("1/2", QueuePresentation.BadgeText(Queue));
+        Assert.Equal("seed-demo", Clipboard.Text);
+        _fixture.Paste();
+        Assert.Equal("Seed demo data", QueuePresentation.BadgeTitle(Queue));
+        Scheduler.Fire();
+        Assert.Equal("Show results", QueuePresentation.BadgeTitle(Queue));
+        Assert.Equal("2/2", QueuePresentation.BadgeText(Queue));
+        Assert.Equal("show-results", Clipboard.Text);
+
+        Queue.Pause();
+        Assert.Equal("Show results", QueuePresentation.BadgeTitle(Queue));
+        Queue.ManualPrevious();
+        Assert.Equal("Seed demo data", QueuePresentation.BadgeTitle(Queue));
+        Queue.Resume();
+        Assert.Equal("Seed demo data", QueuePresentation.BadgeTitle(Queue));
+        Queue.ManualNext();
+        Queue.ManualNext();
+        Assert.Equal(QueueStatus.Finished, Queue.Status);
+        Assert.Equal("Show results", QueuePresentation.BadgeTitle(Queue));
+        Assert.Equal("2/2", QueuePresentation.BadgeText(Queue));
+
+        Queue.Start(Queue.Snippets[1].Id);
+        Assert.Equal("Show results", QueuePresentation.BadgeTitle(Queue));
+        Assert.Equal("2/2", QueuePresentation.BadgeText(Queue));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" \t\r\n ")]
+    public void BadgeWithoutTitleNeverFallsBackToCommandText(string title)
+    {
+        Queue.Update([new Snippet("command-not-for-the-badge", title)]);
+        Queue.Start();
+        Assert.Equal("", QueuePresentation.BadgeTitle(Queue));
+        Assert.Equal("1/1", QueuePresentation.BadgeText(Queue));
+
+        Queue.Pause();
+        Queue.Update([]);
+        Assert.Equal("", QueuePresentation.BadgeTitle(Queue));
+        Assert.Equal("0/0", QueuePresentation.BadgeText(Queue));
+    }
+
+    [Fact]
+    public void BadgeNormalizesTitleWhitespaceWithoutTruncatingOrChangingStoredContent()
+    {
+        var words = string.Join(" ", Enumerable.Repeat("Seed \u6570\u636e demo", 30));
+        var title = $" \t{words}\r\n  show\tresults ";
+        Queue.Update([new Snippet("seed-demo", title)]);
+        Queue.Start();
+        Assert.Equal($"{words} show results", QueuePresentation.BadgeTitle(Queue));
+        Assert.Equal(title, Queue.Current?.Title);
+        Assert.Equal(title, _fixture.NewQueue(new FakeClipboard()).Snippets[0].Title);
+        Assert.Equal("seed-demo", Clipboard.Text);
+    }
+
+    [Fact]
     public void PresentationFollowsQueueState()
     {
         Assert.Equal("3 snippets", Queue.Progress);

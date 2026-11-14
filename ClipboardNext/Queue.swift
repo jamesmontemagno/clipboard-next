@@ -153,6 +153,15 @@ final class DemoQueue {
         if let reason { message = reason }
     }
 
+    func reset() {
+        cancelPending()
+        index = nil
+        status = .idle
+        ownsClipboard = false
+        ownedChangeCount = nil
+        message = nil
+    }
+
     func resume() {
         guard current != nil, status == .paused else {
             start()

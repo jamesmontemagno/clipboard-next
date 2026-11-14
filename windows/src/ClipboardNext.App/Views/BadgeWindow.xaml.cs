@@ -10,7 +10,7 @@ using WinRT.Interop;
 namespace ClipboardNext.App;
 
 /// <summary>
-/// The tiny always-on-top progress badge, such as <c>3/12</c>. It never takes keyboard focus,
+/// The always-on-top title and progress badge. It never takes keyboard focus,
 /// can be dragged anywhere on any display, and remembers where it was left.
 /// </summary>
 public sealed partial class BadgeWindow : Window
@@ -19,6 +19,8 @@ public sealed partial class BadgeWindow : Window
     private readonly nint _hwnd;
     private readonly FloatingWindowDragger _dragger;
     private XamlRoot? _xamlRoot;
+    private int _widthDip = BadgePlacement.WidthDip;
+    private bool _hasPlacement;
 
     internal BadgeWindow(AppModel model)
     {
@@ -57,12 +59,19 @@ public sealed partial class BadgeWindow : Window
         var target = Resolve(AppWindowPlacement.GetScaleForWindow(_hwnd));
         AppWindow.Move(new PointInt32(target.X, target.Y));
         target = Resolve(AppWindowPlacement.GetScaleForWindow(_hwnd));
+        if (_widthDip == BadgePlacement.TitledWidthDip)
+        {
+            target = ClampToCurrentWorkArea(target);
+        }
+
         AppWindow.MoveAndResize(target);
+        _hasPlacement = true;
+        RememberAdjustedPosition();
     }
 
     private RectInt32 Resolve(double scale)
     {
-        var width = AppWindowPlacement.DipToPixels(BadgePlacement.WidthDip, scale);
+        var width = AppWindowPlacement.DipToPixels(_widthDip, scale);
         var height = AppWindowPlacement.DipToPixels(BadgePlacement.HeightDip, scale);
         var margin = AppWindowPlacement.DipToPixels(BadgePlacement.MarginDip, scale);
 
@@ -84,7 +93,14 @@ public sealed partial class BadgeWindow : Window
         var queue = _model.Queue;
         var detected = _model.Flash.IsActive;
         var running = queue.Status == QueueStatus.Running;
+        var title = QueuePresentation.BadgeTitle(queue);
+        var hasTitle = title.Length > 0;
 
+        TitleText.Text = title;
+        TitleText.Visibility = hasTitle ? Visibility.Visible : Visibility.Collapsed;
+        TitleSeparator.Visibility = hasTitle ? Visibility.Visible : Visibility.Collapsed;
+        TitleColumn.Width = hasTitle ? new GridLength(1, GridUnitType.Star) : GridLength.Auto;
+        BadgeContent.HorizontalAlignment = hasTitle ? HorizontalAlignment.Stretch : HorizontalAlignment.Center;
         PositionText.Text = QueuePresentation.BadgeText(queue);
         ClipboardIcon.Visibility = detected ? Visibility.Collapsed : Visibility.Visible;
         DetectedIcon.Visibility = detected ? Visibility.Visible : Visibility.Collapsed;
@@ -94,8 +110,16 @@ public sealed partial class BadgeWindow : Window
         RunningDot.Visibility = running ? Visibility.Visible : Visibility.Collapsed;
 
         var state = detected ? "Paste detected" : queue.Status.DisplayName();
-        ToolTipService.SetToolTip(RootGrid, $"{state}. Drag to move. Hide it from the tray menu or Settings.");
-        AutomationProperties.SetName(RootGrid, $"{queue.Progress}, {state}");
+        var description = hasTitle ? $"{title}, {queue.Progress}, {state}" : $"{queue.Progress}, {state}";
+        ToolTipService.SetToolTip(RootGrid, $"{description}. Drag to move. Hide it from the tray menu or Settings.");
+        AutomationProperties.SetName(RootGrid, description);
+
+        var widthDip = hasTitle ? BadgePlacement.TitledWidthDip : BadgePlacement.WidthDip;
+        if (_widthDip != widthDip)
+        {
+            _widthDip = widthDip;
+            ResizeForScale(AppWindowPlacement.GetScaleForWindow(_hwnd));
+        }
     }
 
     private void OnStateChanged(object? sender, EventArgs e) => Refresh();
@@ -118,12 +142,36 @@ public sealed partial class BadgeWindow : Window
 
     // Dragging the badge to a display with another scale keeps its size in DIPs.
     private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args)
+        => ResizeForScale(sender.RasterizationScale);
+
+    private void ResizeForScale(double scale)
     {
-        var width = AppWindowPlacement.DipToPixels(BadgePlacement.WidthDip, sender.RasterizationScale);
-        var height = AppWindowPlacement.DipToPixels(BadgePlacement.HeightDip, sender.RasterizationScale);
+        if (!_hasPlacement)
+        {
+            return;
+        }
+
+        var width = AppWindowPlacement.DipToPixels(_widthDip, scale);
+        var height = AppWindowPlacement.DipToPixels(BadgePlacement.HeightDip, scale);
         if (AppWindow.Size.Width != width || AppWindow.Size.Height != height)
         {
-            AppWindow.Resize(new SizeInt32(width, height));
+            var position = AppWindow.Position;
+            AppWindow.MoveAndResize(ClampToCurrentWorkArea(new RectInt32(position.X, position.Y, width, height)));
+            RememberAdjustedPosition();
+        }
+    }
+
+    private RectInt32 ClampToCurrentWorkArea(RectInt32 bounds) =>
+        AppWindowPlacement.ClampToWorkArea(
+            DisplayArea.GetFromWindowId(AppWindow.Id, DisplayAreaFallback.Primary).WorkArea,
+            bounds.X, bounds.Y, bounds.Width, bounds.Height);
+
+    private void RememberAdjustedPosition()
+    {
+        var position = AppWindow.Position;
+        if (_model.Settings.BadgePosition is { } saved && saved != (position.X, position.Y))
+        {
+            _model.Settings.BadgePosition = (position.X, position.Y);
         }
     }
 
