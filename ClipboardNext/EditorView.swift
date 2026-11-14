@@ -24,6 +24,7 @@ struct EditorView: View {
                 if model.queue.status != .running, selection != nil {
                     Button("Start Here") { model.queue.start(at: selection) }
                 }
+                SettingsButton(model: model)
             }
             .padding(20)
             Divider()
@@ -112,42 +113,15 @@ struct EditorView: View {
             }
             Divider()
             VStack(alignment: .leading, spacing: 8) {
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 12) {
-                        importButton
-                        badgeToggle
-                        delayControl
-                    }
-                    .fixedSize(horizontal: true, vertical: false)
-                    VStack(alignment: .leading, spacing: 8) {
-                        importButton
-                        badgeToggle
-                        delayControl
-                    }
-                }
                 HStack {
+                    importButton
+                    Spacer()
                     if model.monitor.monitoring {
                         Label("Paste detection on", systemImage: "checkmark.circle").foregroundStyle(.green)
                     } else {
-                        Button("Enable / Retry Paste Detection") { model.monitor.requestPermission() }
-                        Button("Privacy Settings") { model.monitor.openSettings() }
+                        Label("Manual mode · enable paste detection in Settings", systemImage: "hand.raised")
+                            .foregroundStyle(.secondary)
                     }
-                }
-                if !model.monitor.monitoring {
-                    HStack {
-                        Text("Running: \(Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? "Clipboard Next")")
-                            .font(.caption).foregroundStyle(.secondary)
-                        Button("Reveal This App") {
-                            NSWorkspace.shared.activateFileViewerSelecting([Bundle.main.bundleURL])
-                        }
-                        .font(.caption)
-                    }
-                }
-                if let error = model.monitor.error {
-                    Text(error).font(.caption).foregroundStyle(.orange).textSelection(.enabled)
-                } else if !model.monitor.monitoring {
-                    Text("Manual mode. Enable Input Monitoring for automatic Command-V advancement.")
-                        .font(.caption).foregroundStyle(.secondary)
                 }
                 if let message = model.queue.message {
                     Text(message).font(.caption).foregroundStyle(.secondary)
@@ -182,29 +156,6 @@ struct EditorView: View {
     private var importButton: some View {
         Button("Import…", systemImage: "square.and.arrow.down") { importing = true }
             .disabled(model.queue.status == .running)
-    }
-
-    private var badgeToggle: some View {
-        @Bindable var badge = model.badge
-        return Toggle("Floating badge", isOn: $badge.isVisible).toggleStyle(.switch)
-    }
-
-    private var delayControl: some View {
-        HStack(spacing: 6) {
-            Text("Next after").fixedSize()
-            Slider(
-                value: Binding(
-                    get: { Double(model.queue.advanceDelayMilliseconds) },
-                    set: { model.queue.setAdvanceDelay(milliseconds: Int($0)) }),
-                in: Double(DemoQueue.delayRange.lowerBound)...Double(DemoQueue.delayRange.upperBound),
-                step: 50)
-                .frame(width: 140)
-                .accessibilityLabel("Next after")
-            Text(String(format: "%.2f s", Double(model.queue.advanceDelayMilliseconds) / 1000))
-                .monospacedDigit().foregroundStyle(.secondary)
-                .fixedSize()
-        }
-        .help("How long to wait after Command-V before the next snippet replaces the clipboard. Increase it if a slow app pastes the wrong snippet.")
     }
 
     private func delete(_ id: UUID) {

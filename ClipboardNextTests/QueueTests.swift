@@ -106,6 +106,67 @@ final class QueueTests: XCTestCase {
     }
 
     @MainActor
+    func testResetCancelsPendingPastePreservesSnippetsAndClipboardAndRestartsAtBeginning() async {
+        let (queue, clipboard, scheduler, url) = fixture()
+        let snippets = queue.snippets
+        queue.start(at: snippets[1].id)
+        paste(queue)
+        let text = clipboard.text
+        let count = clipboard.changeCount
+
+        queue.reset()
+        scheduler.fire()
+        XCTAssertEqual(queue.status, .idle)
+        XCTAssertNil(queue.index)
+        XCTAssertNil(queue.current)
+        XCTAssertNil(queue.message)
+        XCTAssertFalse(queue.ownsClipboard)
+        XCTAssertEqual(queue.snippets, snippets)
+        XCTAssertEqual(clipboard.text, text)
+        XCTAssertEqual(clipboard.changeCount, count)
+        XCTAssertEqual(BadgePresentation(queue: queue).text, "0/3")
+        XCTAssertEqual(DemoQueue(clipboard: FakeClipboard(), storageURL: url).snippets, snippets)
+
+        queue.start()
+        XCTAssertEqual(queue.index, 0)
+        XCTAssertEqual(clipboard.text, snippets[0].text)
+        paste(queue)
+        scheduler.fire()
+        XCTAssertEqual(queue.index, 1)
+    }
+
+    @MainActor
+    func testResetFromPausedFinishedAndEmptyQueuesDoesNotCopyOrDelete() async {
+        let (queue, clipboard, scheduler, _) = fixture()
+        queue.start()
+        queue.keyDown(command: true, isRepeat: false, isOwnApp: false)
+        queue.pause("Paused for testing")
+        queue.reset()
+        queue.keyUp()
+        scheduler.fire()
+        XCTAssertEqual(queue.status, .idle)
+        XCTAssertNil(queue.index)
+        XCTAssertNil(queue.message)
+        XCTAssertEqual(clipboard.text, queue.snippets[0].text)
+
+        queue.start(at: queue.snippets.last?.id)
+        queue.manualNext()
+        XCTAssertEqual(queue.status, .finished)
+        let count = clipboard.changeCount
+        queue.reset()
+        XCTAssertEqual(queue.status, .idle)
+        XCTAssertNil(queue.index)
+        XCTAssertEqual(queue.snippets.count, 3)
+        XCTAssertEqual(clipboard.changeCount, count)
+
+        queue.update([])
+        queue.reset()
+        XCTAssertEqual(queue.status, .idle)
+        XCTAssertTrue(queue.snippets.isEmpty)
+        XCTAssertEqual(clipboard.changeCount, count)
+    }
+
+    @MainActor
     func testAdvanceDelayIsUsedClampedAndPersisted() async {
         let suite = "ClipboardNextTests-\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suite)!

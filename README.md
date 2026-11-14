@@ -41,7 +41,7 @@ xcodebuild -project ClipboardNext.xcodeproj -scheme ClipboardNext \
 open build/Build/Products/Release/ClipboardNext.app
 ```
 
-The Release build supports Apple Silicon and Intel. Find the clipboard icon in the menu bar; **Open Queue Editor** reopens the window. Closing the window keeps the app running. Use **Quit Clipboard Next** to exit.
+The Release build supports Apple Silicon and Intel. Find the clipboard icon in the menu bar; **Open Editor** in the dropdown reopens the window. Closing the window keeps the app running. Use the power button at the bottom right of the dropdown to quit.
 
 ## Prepare a demo
 
@@ -58,22 +58,25 @@ For the TheaterLog script, select the commands needed for your chosen demo path,
 ## Present
 
 - **Start** copies the selected snippet (or the first) and arms the queue.
-- Press **Command-V** in your destination app. After releasing V and waiting the **Next after** delay, the next snippet is copied. Adjust the delay with the slider in the editor (0.10–3.00 s, default 0.35 s); raise it if a slow app pastes the wrong snippet. The setting is remembered.
+- Press **Command-V** in your destination app. After releasing V and waiting the **Next after** delay, the next snippet is copied. Adjust the delay with the **Next after** slider in **Settings** (0.10–3.00 s, default 0.35 s); raise it if a slow app pastes the wrong snippet. The setting is remembered.
 - The menu bar icon briefly becomes a checkmark when a paste gesture is detected.
-- Enable **Show Floating Badge** for an always-on-top capsule showing the current snippet's title and progress, such as `Seed demo data · 3/12`. Untitled snippets and queues that haven't started keep the compact progress-only badge. Long titles are shortened with an ellipsis; hover to read the full title. Titles are labels, never clipboard content. Drag it anywhere on any display; **Reset Badge Position** in the menu puts it back in the top-right corner. If its saved spot ends up off screen (for example, after unplugging a monitor), it returns there automatically. Its clipboard icon flashes to a green checkmark on detection, without taking keyboard focus. Visibility and position are remembered.
+- Turn on the **Badge** button in the menu dropdown or **Show floating badge** in **Settings** for an always-on-top capsule showing the current snippet's title and progress, such as `Seed demo data · 3/12`. Untitled snippets and queues that haven't started keep the compact progress-only badge. Long titles are shortened with an ellipsis; hover to read the full title. Titles are labels, never clipboard content. Drag it anywhere on any display; **Reset Badge Position** in **Settings** puts it back in the top-right corner. If its saved spot ends up off screen (for example, after unplugging a monitor), it returns there automatically. Its clipboard icon flashes to a green checkmark on detection, without taking keyboard focus. Visibility and position are remembered.
 - **Pause** cancels pending advancement. **Resume** copies the current snippet again.
 - **Next** skips to and copies the next snippet without pasting. When paused, it stays paused. Before starting, it copies the first snippet.
 - **Back** puts the previous snippet back on the clipboard, for example to redo a step. It cancels a paste that's still waiting to advance, and stepping back from a finished queue resumes it.
 - **Start Here** restarts from the selected snippet. Pause first to edit the queue.
 - The last paste marks the queue **Finished**, leaving the final snippet on the clipboard. Start again to replay.
+- The refresh icon at the top of the menu dropdown **resets the queue** to Ready. It cancels pending advancement without deleting snippets or changing the clipboard; the next **Start** begins at the first snippet.
+
+Open **Settings** with the gear in the menu dropdown (it opens in place) or from the editor for floating badge options, paste detection setup, and the advancement delay. **Start with Mac** uses macOS Login Items to open the app at sign-in; macOS may require approval in **System Settings > General > Login Items**. Settings also shows the installed version and links to the website and privacy policy.
 
 If another app changes the clipboard, the queue pauses and preserves that content. Resume explicitly to copy the current queued snippet again. The clipboard is not cleared or restored on pause, quit, or launch.
 
 ## Permission and limitations
 
-Choose **Enable Paste Detection** and allow **Clipboard Next** in **System Settings > Privacy & Security > Input Monitoring**. The Enable action opens that settings pane every time, including on retries. The app uses a listen-only keyboard event tap, never intercepts keystrokes, and does not request permission until you ask. macOS may require quitting and reopening it after changing permission. Manual Next works without permission.
+On first launch, the menu dropdown shows a one-time card explaining paste detection with **Enable Paste Detection** and **Not Now**. Later, open **Settings > Paste Detection**, choose **Enable / Retry**, and allow **Clipboard Next** in **System Settings > Privacy & Security > Input Monitoring**. The Enable action opens that settings pane every time, including on retries. The app uses a listen-only keyboard event tap, never intercepts keystrokes, and does not request permission until you ask. macOS may require quitting and reopening it after changing permission. Manual Next works without permission.
 
-Debug and Release have separate app identities and require separate approvals. For demos, consistently use the Release app from the build command above. **Reveal This App** in the editor locates the running copy, so you can add the correct one in System Settings.
+Debug and Release have separate app identities and require separate approvals. For demos, consistently use the Release app from the build command above. **Reveal This App** in **Settings > Paste Detection** locates the running copy, so you can add the correct one in System Settings.
 
 Local builds use a stable Apple Development signature, so a grant persists across rebuilds. Ad-hoc builds (`CODE_SIGN_IDENTITY=-`) get a new signature on every rebuild, which invalidates the grant even if Settings still shows the toggle enabled. If that happens, quit the app, remove its stale Input Monitoring entry with the minus button, add the current app with the plus button, enable it, and reopen that same copy. No permissions are reset automatically.
 
