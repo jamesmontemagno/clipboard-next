@@ -1,7 +1,7 @@
 cask "clipboard-next" do
   # Updated automatically by .github/workflows/release.yml on each v*-mac tag.
-  version "1.0.4"
-  sha256 "ad644e256cdfc1f4844dc87e7bb89046239f322ab8c7b2110b3af3c5b3c3c82f"
+  version "1.1.0"
+  sha256 "833fb01858872c942d5d2d247bf0abb60a6fd2e6f79e559cb6ef9775925abb4f"
 
   url "https://github.com/jamesmontemagno/clipboard-next/releases/download/v#{version}-mac/ClipboardNext-v#{version}-mac.zip"
   name "Clipboard Next"
