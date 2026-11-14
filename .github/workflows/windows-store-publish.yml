@@ -1,7 +1,7 @@
 name: Windows Store Publish
 
 # Clipboard Next for Windows ships only through the Microsoft Store.
-# A v*-windows tag packages the Store upload, then waits for two separate approvals of the
+# A v*-windows tag packages the Store upload and creates a GitHub release, then waits for two separate approvals of the
 # protected microsoft-store environment: first to submit to the Internal Testing flight, then
 # to submit that same verified upload to the public Store listing.
 
@@ -66,6 +66,8 @@ jobs:
     name: Package Microsoft Store upload
     if: github.event_name == 'push' || !inputs.diagnose_only
     runs-on: windows-latest
+    permissions:
+      contents: write
     outputs:
       source_commit: ${{ steps.version.outputs.source_commit }}
 
@@ -113,6 +115,7 @@ jobs:
           if ($head -ne $tagCommit) { throw "Checkout does not match the requested release tag." }
           "source_commit=$head" >> $env:GITHUB_OUTPUT
 
+          "RELEASE_TAG=$tag" >> $env:GITHUB_ENV
           "APP_VERSION=$version" >> $env:GITHUB_ENV
           "PACKAGE_VERSION=$version.0" >> $env:GITHUB_ENV
 
@@ -186,6 +189,26 @@ jobs:
           name: windows-store-package
           path: artifacts/store/ClipboardNext-*.msixupload
           if-no-files-found: error
+
+      - name: Create GitHub Release
+        if: github.event_name == 'push' || inputs.publish
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: Clipboard Next for Windows ${{ env.RELEASE_TAG }}
+          body: |
+            ## Microsoft Store release
+
+            [Get Clipboard Next from the Microsoft Store](https://apps.microsoft.com/detail/9NCXV6W499WM).
+
+            This release records the verified Windows build before Store submission.
+            Internal Testing and production still require separate approvals and Store certification.
+            Until this version is published in the Store, the link may install the previous version.
+            Windows installers are distributed only through the Microsoft Store; the upload package is retained as a workflow artifact.
+          generate_release_notes: true
+          make_latest: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   flight:
     name: Approve and submit to Internal Testing
@@ -375,6 +398,7 @@ jobs:
               if ($submission.id -cne $submissionId) {
                 throw "Partner Center returned an unexpected flight submission."
               }
+              Write-Host "Internal Testing flight $flightId has pending submission $submissionId with status $($submission.status)."
               if ($submission.status -notin @("PendingCommit", "CommitFailed")) {
                 throw "Internal Testing has a submission that is not an editable draft. Resolve it in Partner Center before publishing; no draft was removed."
               }
@@ -386,7 +410,16 @@ jobs:
                   Invoke-RestMethod -Method Delete -Uri $submissionUri -Headers $headers | Out-Null
                 }
                 catch {
-                  throw "Partner Center could not delete the approved Internal Testing draft. Inspect its state before retrying; the flight and production listing were not targeted."
+                  $httpStatus = if ($null -ne $_.Exception.Response) { [int]$_.Exception.Response.StatusCode } else { "unavailable" }
+                  $detail = if ($_.ErrorDetails.Message) { $_.ErrorDetails.Message } else { $_.Exception.Message }
+                  foreach ($sensitiveValue in @($token.access_token, $env:PARTNER_CENTER_CLIENT_SECRET, $submission.fileUploadUrl)) {
+                    if (-not [string]::IsNullOrWhiteSpace($sensitiveValue)) {
+                      $detail = $detail.Replace($sensitiveValue, "[redacted]")
+                    }
+                  }
+                  $detail = $detail -replace 'https?://[^\s"''<>]+', '[redacted URL]' -replace '[\r\n]+', ' '
+                  Write-Host "Partner Center draft deletion returned HTTP ${httpStatus}: $detail"
+                  throw "Partner Center could not delete Internal Testing draft $submissionId (HTTP $httpStatus). Inspect its state before retrying; the request may have reached the service. The flight and production listing were not targeted."
                 }
                 Write-Host "Discarded only the explicitly approved portal-created PendingCommit draft."
               }
