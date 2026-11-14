@@ -140,7 +140,7 @@ python windows/tools/generate-icons.py
 ## CI and releases
 
 - [`windows-build.yml`](../.github/workflows/windows-build.yml) runs on pushes and pull requests that touch `windows/`: the core tests on Linux, then an unsigned MSIX build for x64 and ARM64 on Windows.
-- [`windows-store-publish.yml`](../.github/workflows/windows-store-publish.yml) runs for tags like `v1.0.0-windows`: it packages the Store upload, then waits for approval to submit it to the **Internal Testing** flight, and for a second approval to submit that same upload to the public listing.
+- [`windows-store-publish.yml`](../.github/workflows/windows-store-publish.yml) runs for tags like `v1.0.0-windows`: it tests and verifies the Store upload, creates a GitHub release with generated release notes and a Store link, then waits for approval to submit it to the **Internal Testing** flight, and for a second approval to submit that same upload to the public listing. Manual runs with **publish** checked follow the same sequence; build-only and diagnostics runs do not create releases. The GitHub release is available before Store submission, so its Store link may still install the previous version until certification and publication finish. No Windows installer or Store upload is attached to the release, and the macOS **Latest** release is left unchanged.
 
 See [`docs/microsoft-store-listing.md`](docs/microsoft-store-listing.md) for the listing copy, the first submission, and the one-time setup, and [`packaging/README.md`](packaging/README.md) for how the upload is built and verified.
 
