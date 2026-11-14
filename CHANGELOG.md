@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- **Windows:** Store publishing now creates a GitHub release with release notes and a Store link after package verification, before the Internal Testing and production approvals. Downloads remain Microsoft Store-only.
+
+### Fixed
+
+- **Windows:** Failed Internal Testing draft deletions now report the HTTP status and redacted Partner Center response instead of hiding the service's rejection reason.
+
 ## [1.1.0] - 2026-11-13
 
 ### Added
