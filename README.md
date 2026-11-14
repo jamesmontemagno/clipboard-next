@@ -26,7 +26,7 @@ Turn on paste detection in the editor, tray popup, or Settings to advance after 
 
 ## Run from source
 
-Requires macOS 14+ and Xcode 26+.
+Requires macOS 14+. Use Xcode 27.2 to match macOS CI and release builds.
 
 The app icon is maintained in [`ClipboardNext/AppIcon.icon`](ClipboardNext/AppIcon.icon) with Icon Composer. Xcode generates the icon for older supported macOS releases at build time.
 

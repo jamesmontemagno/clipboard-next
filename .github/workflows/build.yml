@@ -26,7 +26,7 @@ permissions:
 
 jobs:
   build-and-test:
-    runs-on: macos-26
+    runs-on: xcode-27
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -34,7 +34,7 @@ jobs:
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '26.2'
+          xcode-version: '27.2'
 
       # CI has no signing certificate, so build and test ad-hoc signed.
       - name: Test

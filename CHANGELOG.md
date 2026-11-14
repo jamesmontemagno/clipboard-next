@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-11-13 (macOS)
+
+### Changed
+
+- **macOS:** Build and release with Xcode 27.2, matching the locally verified toolchain for Settings navigation.
+
 ## [1.1.0] - 2026-11-13
 
 ### Added
@@ -76,7 +82,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - Signed and notarized universal builds.
   - The clipboardnext.com website.
 
-[Unreleased]: https://github.com/jamesmontemagno/clipboard-next/compare/v1.1.0-mac...HEAD
+[Unreleased]: https://github.com/jamesmontemagno/clipboard-next/compare/v1.1.1-mac...HEAD
+[1.1.1]: https://github.com/jamesmontemagno/clipboard-next/compare/v1.1.0-mac...v1.1.1-mac
 [1.1.0]: https://github.com/jamesmontemagno/clipboard-next/compare/v1.0.4-mac...v1.1.0-mac
 [1.0.4]: https://github.com/jamesmontemagno/clipboard-next/compare/v1.0.3-mac...v1.0.4-mac
 [1.0.3]: https://github.com/jamesmontemagno/clipboard-next/compare/v1.0.2-mac...v1.0.3-mac

@@ -4,7 +4,7 @@ applyTo: "ClipboardNext/**,ClipboardNextTests/**,ClipboardNext.xcodeproj/**,Cask
 
 # macOS app
 
-Clipboard Next for macOS is a SwiftUI menu bar app. It needs macOS 14+, Xcode 26+ and Swift 6, and has no external packages.
+Clipboard Next for macOS is a SwiftUI menu bar app. It needs macOS 14+ and Swift 6, and has no external packages. Use Xcode 27.2 to match macOS CI and release builds, which run on GitHub's `xcode-27` runner.
 
 ## Layout
 
