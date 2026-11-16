@@ -26,7 +26,7 @@ dotnet test windows/tests/ClipboardNext.Core.Tests/ClipboardNext.Core.Tests.cspr
 cd site && python3 -m http.server 8765
 ```
 
-CI runs `build.yml` for macOS and `windows-build.yml` for Windows changes, and both must pass before merging.
+CI uses explicit path allowlists: `build.yml` for the macOS app, tests, Xcode project, and its own workflow; `windows-build.yml` for Windows inputs; and `deploy-pages.yml` for the website and its checks. Only affected workflows run, and their checks must pass before merging. Keep both push and PR filters in step when adding build inputs outside the current paths. Manual runs and platform-specific release tags are independent of file filters.
 
 ## Cross-platform rules
 

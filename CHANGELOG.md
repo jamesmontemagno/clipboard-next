@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- **macOS and Windows:** Website-only changes no longer trigger the macOS app build; automatic app checks are scoped to their platform's files and build workflow.
 - **macOS and Windows:** Website links include a branded social preview image, complete Open Graph/Twitter metadata, and improved search metadata for the app, privacy policy, and launch trailer.
 - **Windows:** Failed Internal Testing draft deletions now report the HTTP status and redacted Partner Center response instead of hiding the service's rejection reason.
 

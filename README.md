@@ -143,6 +143,24 @@ The Pages workflow runs these checks on website pull requests and before deploym
 
 ## Tests
 
+### Workflow file filters
+
+Automatic validation runs only when a push to `main` or a pull request changes an input owned by that workflow:
+
+| Workflow | Relevant paths |
+| --- | --- |
+| macOS Build (`build.yml`) | `ClipboardNext/**`, `ClipboardNextTests/**`, `ClipboardNext.xcodeproj/**`, or `.github/workflows/build.yml`; Markdown-only changes are excluded |
+| Windows Build (`windows-build.yml`) | `windows/**`, `global.json`, or `.github/workflows/windows-build.yml`; Markdown-only changes are excluded |
+| Website (`deploy-pages.yml`) | `site/**`, `tools/test_site.py`, or `.github/workflows/deploy-pages.yml`; PRs validate without deploying |
+
+Mixed-platform changes run each affected workflow. Root documentation, `.gitignore`, website tooling, and unrelated workflow changes do not trigger app builds. When adding build inputs outside these paths, update both the push and PR filters for the affected workflow.
+
+Manual runs remain available for all workflows regardless of changed files. Release workflows are intentionally separate: `v*-mac` tags run the macOS release, and `v*-windows` tags run Windows Store publishing, with existing approvals unchanged. GitHub does not apply path filters to tag pushes.
+
+If configuring required status checks, account for path-filtered workflows: GitHub does not produce a successful check for a workflow it skips. Requiring an unrelated platform's check on every PR can block website-only or other-platform PRs.
+
+### App tests
+
 ```sh
 xcodebuild -project ClipboardNext.xcodeproj -scheme ClipboardNext \
   -destination 'platform=macOS,arch=arm64' -derivedDataPath build test
