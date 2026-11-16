@@ -70,6 +70,8 @@ For the TheaterLog script, select the commands needed for your chosen demo path,
 
 Open **Settings** with the gear in the menu dropdown (it opens in place) or from the editor for floating badge options, paste detection setup, and the advancement delay. **Start with Mac** uses macOS Login Items to open the app at sign-in; macOS may require approval in **System Settings > General > Login Items**. Settings also shows the installed version and links to the website and privacy policy.
 
+Under **Appearance**, choose **Theme > System**, **Light**, or **Dark**. The choice is remembered and applies immediately to the editor, menu dropdown, settings, and floating badge. **System** (the default) follows your Mac's appearance, including changes while the app is running.
+
 If another app changes the clipboard, the queue pauses and preserves that content. Resume explicitly to copy the current queued snippet again. The clipboard is not cleared or restored on pause, quit, or launch.
 
 ## Permission and limitations

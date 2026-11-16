@@ -25,6 +25,7 @@ struct SettingsView: View {
 
     var body: some View {
         @Bindable var badge = model.badge
+        @Bindable var appearance = model.appearance
         VStack(spacing: 0) {
             HStack {
                 if inMenu {
@@ -45,6 +46,17 @@ struct SettingsView: View {
             Divider()
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
+                    section("Appearance", icon: "circle.lefthalf.filled") {
+                        Picker("Theme", selection: $appearance.theme) {
+                            ForEach(AppTheme.allCases) { theme in
+                                Text(theme.label).tag(theme)
+                            }
+                        }
+                        .help("Choose a light or dark appearance, or follow your system")
+                        Text("System follows your Mac's appearance. Changes apply immediately to all app windows.")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                    Divider()
                     section("Floating Badge", icon: "rectangle.on.rectangle") {
                         Toggle("Show floating badge", isOn: $badge.isVisible)
                             .toggleStyle(.switch)

@@ -18,6 +18,7 @@ public sealed partial class BadgeWindow : Window
     private readonly AppModel _model;
     private readonly nint _hwnd;
     private readonly FloatingWindowDragger _dragger;
+    private readonly WindowThemeController _themeController;
     private XamlRoot? _xamlRoot;
     private int _widthDip = BadgePlacement.WidthDip;
     private bool _hasPlacement;
@@ -35,6 +36,7 @@ public sealed partial class BadgeWindow : Window
         AppWindow.IsShownInSwitchers = false;
         NativeWindow.MakeNonActivatingToolWindow(_hwnd);
         NativeWindow.RoundCorners(_hwnd);
+        _themeController = new WindowThemeController(this, RootGrid, model.Settings);
 
         _dragger = new FloatingWindowDragger(AppWindow);
         _dragger.Moved += OnMoved;

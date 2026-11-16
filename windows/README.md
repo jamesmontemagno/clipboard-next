@@ -13,6 +13,7 @@ It is distributed **only through the Microsoft Store**, as a packaged (MSIX) app
 - **Paste detection** is off until you turn it on (in the editor's notice bar, the tray popup, or **Settings**). Then each **Ctrl+V** copies the next snippet after the **Next after** delay (0.10–3.00 s, default 0.35 s). Turn on **Terminal paste shortcuts** in Settings to also count **Ctrl+Shift+V** and **Shift+Insert**.
 - **Floating badge.** An optional always-on-top badge showing the current snippet's title and progress, such as `Seed demo data · 3/12`, without taking keyboard focus. Untitled snippets and queues that haven't started keep the compact progress-only badge. Long titles use an ellipsis; hover for the full title. Titles are labels and are never copied. Drag it anywhere on any display; **Reset position** puts it back in the top-right corner, and it returns there by itself if its display is unplugged.
 - **Start with Windows** (Settings) starts the app quietly in the tray at sign-in.
+- **Theme** (Settings) offers **System**, **Light**, and **Dark**. The choice is remembered and applies immediately to the editor, settings flyouts, tray popup, and floating badge. **System** (the default) follows Windows, including appearance changes while the app is running.
 
 If another app changes the clipboard, the queue pauses and leaves that content alone; **Resume** copies the current snippet again. Commands are copied as plain text, never executed, and the app never presses Enter.
 
