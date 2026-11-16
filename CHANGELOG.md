@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- **macOS and Windows:** A remembered **Theme** setting with **System**, **Light**, and **Dark** choices. Changes apply immediately across the editor, settings, menu/tray popup, and floating badge; **System** follows the operating system's appearance.
 - **Windows:** Store publishing now creates a GitHub release with release notes and a Store link after package verification, before the Internal Testing and production approvals. Downloads remain Microsoft Store-only.
 
 ### Fixed

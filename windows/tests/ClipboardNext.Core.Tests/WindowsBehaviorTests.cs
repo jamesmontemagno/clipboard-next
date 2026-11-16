@@ -63,6 +63,56 @@ public sealed class WindowsBehaviorTests : IDisposable
     }
 
     [Fact]
+    public void SettingsWithoutThemeFollowSystemAndKeepOtherPreferences()
+    {
+        Directory.CreateDirectory(_directory);
+        var path = Path.Combine(_directory, "settings.json");
+        File.WriteAllText(path, """{"showFloatingBadge":true,"importFormat":1}""");
+
+        var settings = new AppSettings(path);
+        Assert.Equal(AppTheme.System, settings.Theme);
+        settings.Theme = AppTheme.Dark;
+        var restored = new AppSettings(path);
+        Assert.Equal(AppTheme.Dark, restored.Theme);
+        Assert.True(restored.ShowFloatingBadge);
+        Assert.Equal(ImportFormat.PlainText, restored.ImportFormat);
+    }
+
+    [Theory]
+    [InlineData(AppTheme.Light)]
+    [InlineData(AppTheme.Dark)]
+    [InlineData(AppTheme.System)]
+    public void ThemePersistsAndNotifiesOnlyWhenChanged(AppTheme theme)
+    {
+        var path = Path.Combine(_directory, "settings.json");
+        var settings = new AppSettings(path) { Theme = AppTheme.Light };
+        var changes = 0;
+        settings.ThemeChanged += (_, _) =>
+        {
+            changes++;
+            Assert.Equal(theme, new AppSettings(path).Theme);
+        };
+
+        settings.Theme = theme;
+        settings.Theme = theme;
+        Assert.Equal(theme == AppTheme.Light ? 0 : 1, changes);
+        Assert.Equal(theme, new AppSettings(path).Theme);
+    }
+
+    [Fact]
+    public void UnknownSavedThemeFollowsSystemAndInvalidSelectionsAreRejected()
+    {
+        Directory.CreateDirectory(_directory);
+        var path = Path.Combine(_directory, "settings.json");
+        File.WriteAllText(path, """{"theme":99,"showFloatingBadge":true}""");
+        var settings = new AppSettings(path);
+        Assert.Equal(AppTheme.System, settings.Theme);
+        Assert.Throws<ArgumentOutOfRangeException>(() => settings.Theme = (AppTheme)99);
+        Assert.Equal(AppTheme.System, settings.Theme);
+        Assert.True(settings.ShowFloatingBadge);
+    }
+
+    [Fact]
     public void SettingsPersistAndDefaultToManualModeWithPlainPasteOnly()
     {
         var path = Path.Combine(_directory, "settings.json");
@@ -73,6 +123,7 @@ public sealed class WindowsBehaviorTests : IDisposable
         Assert.Null(settings.BadgePosition);
         Assert.Null(settings.AdvanceDelayMilliseconds);
         Assert.Equal(ImportFormat.Markdown, settings.ImportFormat);
+        Assert.Equal(AppTheme.System, settings.Theme);
 
         settings.PasteDetectionEnabled = true;
         settings.DetectTerminalPasteShortcuts = true;

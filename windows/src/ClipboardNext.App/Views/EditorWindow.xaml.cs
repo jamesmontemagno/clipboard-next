@@ -19,6 +19,7 @@ public sealed partial class EditorWindow : Window
 
     private readonly AppModel _model;
     private readonly WindowChromeController _chromeController;
+    private readonly WindowThemeController _themeController;
     private readonly List<SnippetRow> _rows = [];
     private Guid? _selectedId;
     private LaunchAtLoginState _startupState = LaunchAtLoginState.Unavailable;
@@ -36,6 +37,7 @@ public sealed partial class EditorWindow : Window
         var hwnd = WindowNative.GetWindowHandle(this);
         AppWindowPlacement.CenterInCurrentWorkAreaAtDipSize(AppWindow, hwnd, DefaultWidthDip, DefaultHeightDip);
         _chromeController = new WindowChromeController(this, RootGrid, MinimumWidthDip, MinimumHeightDip);
+        _themeController = new WindowThemeController(this, RootGrid, model.Settings);
 
         Controls.Attach(model.Queue, () => _selectedId);
         ImportPage.Attach(model.Queue, model.Settings, hwnd, ShowQueuePage);
@@ -189,6 +191,7 @@ public sealed partial class EditorWindow : Window
         DelayText.Text = $"{delay / 1000.0:0.00} s";
         BadgeSwitch.IsOn = _model.Badge.IsVisible;
         ResetBadgeButton.IsEnabled = _model.Badge.IsVisible;
+        ThemeComboBox.SelectedIndex = (int)_model.Settings.Theme;
     }
 
     private void RefreshNotices()
@@ -388,6 +391,14 @@ public sealed partial class EditorWindow : Window
     }
 
     private void OnResetBadgeClick(object sender, RoutedEventArgs e) => _model.Badge.ResetPosition();
+
+    private void OnThemeSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_ready && ThemeComboBox.SelectedIndex >= 0)
+        {
+            _model.Settings.Theme = (AppTheme)ThemeComboBox.SelectedIndex;
+        }
+    }
 
     // Windows owns the startup setting, so it is read each time the settings open.
     private async void OnSettingsFlyoutOpening(object? sender, object e)

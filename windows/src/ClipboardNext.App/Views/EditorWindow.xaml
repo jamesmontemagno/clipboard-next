@@ -277,6 +277,25 @@
                                 </Flyout.FlyoutPresenterStyle>
                                 <StackPanel Width="500" Spacing="4">
                                     <toolkit:SettingsCard
+                                        AutomationProperties.AutomationId="ThemeCard"
+                                        Description="Choose an appearance, or follow your system."
+                                        Header="Theme">
+                                        <toolkit:SettingsCard.HeaderIcon>
+                                            <FontIcon Glyph="&#xE790;" />
+                                        </toolkit:SettingsCard.HeaderIcon>
+                                        <ComboBox
+                                            x:Name="ThemeComboBox"
+                                            MinWidth="120"
+                                            AutomationProperties.AutomationId="ThemeComboBox"
+                                            AutomationProperties.Name="Theme"
+                                            SelectionChanged="OnThemeSelectionChanged"
+                                            ToolTipService.ToolTip="Applies immediately to all app windows">
+                                            <ComboBoxItem Content="System" />
+                                            <ComboBoxItem Content="Light" />
+                                            <ComboBoxItem Content="Dark" />
+                                        </ComboBox>
+                                    </toolkit:SettingsCard>
+                                    <toolkit:SettingsCard
                                         AutomationProperties.AutomationId="PasteDetectionCard"
                                         Description="Copy the next snippet when you paste the current one."
                                         Header="Paste detection">

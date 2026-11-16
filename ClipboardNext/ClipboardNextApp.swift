@@ -43,6 +43,7 @@ private struct MenuBarIndicator: View {
 @MainActor
 @Observable
 final class AppModel {
+    let appearance = ThemeSettings()
     let queue: DemoQueue
     let monitor: ClipboardMonitor
     let badge: FloatingBadge

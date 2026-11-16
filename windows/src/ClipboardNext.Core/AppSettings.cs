@@ -2,6 +2,13 @@ using System.Text.Json;
 
 namespace ClipboardNext.Core;
 
+public enum AppTheme
+{
+    System,
+    Light,
+    Dark,
+}
+
 internal sealed class AppSettingsData
 {
     public int? AdvanceDelayMilliseconds { get; set; }
@@ -17,6 +24,8 @@ internal sealed class AppSettingsData
     public bool DetectTerminalPasteShortcuts { get; set; }
 
     public ImportFormat ImportFormat { get; set; }
+
+    public AppTheme Theme { get; set; }
 }
 
 /// <summary>
@@ -34,6 +43,29 @@ public sealed class AppSettings
     {
         _path = path;
         _data = Load(path);
+    }
+
+    public event EventHandler? ThemeChanged;
+
+    public AppTheme Theme
+    {
+        get => Enum.IsDefined(_data.Theme) ? _data.Theme : AppTheme.System;
+        set
+        {
+            if (!Enum.IsDefined(value))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown app theme.");
+            }
+
+            if (Theme == value)
+            {
+                return;
+            }
+
+            _data.Theme = value;
+            Save();
+            ThemeChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     /// <summary>The saved wait between a detected paste and the next snippet, before clamping.</summary>

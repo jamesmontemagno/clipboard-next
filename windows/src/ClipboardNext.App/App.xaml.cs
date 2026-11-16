@@ -292,14 +292,14 @@ public partial class App : Application
 
     private void ShowTrayPopup()
     {
-        if (_isExiting || _trayView is null)
+        if (_isExiting || _trayView is null || _model is null)
         {
             return;
         }
 
         // The content is prepared ahead of time, but no window is created until it is requested:
         // a hidden acrylic window can otherwise leave an empty surface at startup.
-        _trayPopup ??= new TrayPopupWindow(_trayView);
+        _trayPopup ??= new TrayPopupWindow(_trayView, _model.Settings);
         _trayPopup.ShowNearCursor(TrayPopupView.PopupWidth, TrayPopupView.PopupHeight);
     }
 

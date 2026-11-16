@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using ClipboardNext.Core;
 using Microsoft.UI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
@@ -17,8 +18,9 @@ internal sealed class TrayPopupWindow : Window
     private readonly AppWindow _appWindow;
     private readonly nint _hwnd;
     private bool _hideRequested;
+    private readonly WindowThemeController _themeController;
 
-    public TrayPopupWindow(UIElement content)
+    public TrayPopupWindow(FrameworkElement content, AppSettings settings)
     {
         Title = "Clipboard Next";
         _hwnd = WindowNative.GetWindowHandle(this);
@@ -32,6 +34,7 @@ internal sealed class TrayPopupWindow : Window
 
         SystemBackdrop = new DesktopAcrylicBackdrop();
         Content = content;
+        _themeController = new WindowThemeController(this, content, settings);
 
         Activated += OnActivated;
         Closed += OnClosed;
