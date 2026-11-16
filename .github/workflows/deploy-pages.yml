@@ -3,20 +3,35 @@ name: Deploy website to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: ["site/**", ".github/workflows/deploy-pages.yml"]
+    paths: ["site/**", "tools/test_site.py", ".github/workflows/deploy-pages.yml"]
+  pull_request:
+    paths: ["site/**", "tools/test_site.py", ".github/workflows/deploy-pages.yml"]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.event_name == 'pull_request' && github.ref || 'deploy' }}
   cancel-in-progress: true
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Check search metadata and social previews
+        run: python3 -m unittest discover -s tools -p 'test_site.py' -v
+
   deploy:
+    needs: validate
+    if: github.event_name != 'pull_request'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

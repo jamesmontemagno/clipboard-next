@@ -127,6 +127,20 @@ The static site lives in [`site/`](site/) and deploys through [`.github/workflow
 
 Both macOS and Windows downloads stay visible. The site detects supported desktop platforms to recommend a download and tailor shortcuts and setup guidance; the **Show instructions for** selector overrides detection for the current page without saving a preference. Mobile, Linux, unknown platforms, and JavaScript-disabled browsers see labeled guidance for both platforms. When verifying changes, check automatic detection, both manual overrides, the JavaScript-disabled fallback, and narrow-screen layouts. [`site/privacy.html`](site/privacy.html) is the privacy policy the Microsoft Store listing links to; keep it in step with what the apps actually do.
 
+### Search and social previews
+
+Every public page includes its own title, description, canonical URL, and Open Graph/Twitter large-image metadata directly in the HTML, so crawlers do not need JavaScript. The homepage also describes the free macOS/Windows app with Schema.org JSON-LD. Keep [`site/sitemap.xml`](site/sitemap.xml) in step with public pages; the 404 page is intentionally not indexed.
+
+The shared preview image is [`site/assets/social-card-v1.png`](site/assets/social-card-v1.png), an opaque 1200 × 630 PNG with an editable [SVG source](site/assets/social-card-v1.svg). Export the SVG at its native size when changing the artwork; use the PNG, not the SVG, in social metadata for crawler compatibility. Version the filename and update all metadata when replacing an already-published image to avoid stale image caches.
+
+Run the dependency-free website checks from the repository root:
+
+```sh
+python3 -m unittest discover -s tools -p 'test_site.py' -v
+```
+
+The Pages workflow runs these checks on website pull requests and before deployment; pull requests do not deploy. After deployment, check that the canonical page and image URLs return HTTP 200 without authentication. Social platforms cache previews, so use their re-scrape/inspection tools after the update (for example, LinkedIn Post Inspector or Facebook Sharing Debugger). These checks cannot verify public DNS, crawler access, or refresh third-party caches.
+
 ## Tests
 
 ```sh

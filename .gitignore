@@ -3,6 +3,7 @@ build/
 DerivedData/
 *.xcuserstate
 xcuserdata/
+__pycache__/
 
 # Local Microsoft Store uploads built from windows/ (see windows/packaging/README.md)
 artifacts/
