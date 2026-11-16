@@ -16,14 +16,16 @@ public sealed partial class TrayPopupView : UserControl
 
     private readonly AppModel _model;
     private readonly Action _openEditor;
+    private readonly Action _openSettings;
     private readonly Action _exit;
     private readonly Action _dismiss;
     private NoticeAction _noticeAction;
 
-    internal TrayPopupView(AppModel model, Action openEditor, Action exit, Action dismiss)
+    internal TrayPopupView(AppModel model, Action openEditor, Action openSettings, Action exit, Action dismiss)
     {
         _model = model;
         _openEditor = openEditor;
+        _openSettings = openSettings;
         _exit = exit;
         _dismiss = dismiss;
         InitializeComponent();
@@ -111,6 +113,12 @@ public sealed partial class TrayPopupView : UserControl
     }
 
     private void OnOpenEditorClick(object sender, RoutedEventArgs e) => OpenEditor();
+
+    private void OnSettingsClick(object sender, RoutedEventArgs e)
+    {
+        _dismiss();
+        _openSettings();
+    }
 
     private void OnBadgeToggleClick(object sender, RoutedEventArgs e) =>
         _model.Badge.IsVisible = BadgeToggle.IsChecked == true;

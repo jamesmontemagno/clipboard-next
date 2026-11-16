@@ -157,6 +157,18 @@
                     ToolTipService.ToolTip="Reset badge position">
                     <FontIcon FontSize="16" Glyph="&#xE72C;" />
                 </Button>
+                <Button
+                    x:Name="SettingsButton"
+                    Width="36"
+                    Height="36"
+                    Padding="6"
+                    AutomationProperties.AutomationId="TraySettingsButton"
+                    AutomationProperties.Name="Settings"
+                    Click="OnSettingsClick"
+                    Style="{StaticResource SubtleButtonStyle}"
+                    ToolTipService.ToolTip="Settings">
+                    <FontIcon FontSize="16" Glyph="&#xE713;" />
+                </Button>
                 <ToggleButton
                     x:Name="BadgeToggle"
                     AutomationProperties.AutomationId="TrayBadgeToggle"
