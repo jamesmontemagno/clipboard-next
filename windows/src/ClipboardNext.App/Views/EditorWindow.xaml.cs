@@ -433,4 +433,6 @@ public sealed partial class EditorWindow : Window
         StartupSwitch.IsEnabled = LaunchAtLogin.CanChange(state);
         StartupCard.Description = LaunchAtLogin.Describe(state);
     }
+
+    internal void ShowSettings() => SettingsButton.Flyout?.ShowAt(SettingsButton);
 }

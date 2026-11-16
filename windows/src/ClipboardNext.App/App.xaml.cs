@@ -168,7 +168,7 @@ public partial class App : Application
         _detectedIcon = new BitmapImage(new Uri("ms-appx:///Assets/TrayIconDetected.ico"));
         _shownIcon = _idleIcon;
 
-        _trayView = new TrayPopupView(model, OpenEditor, ExitApplication, () => _trayPopup?.Hide());
+        _trayView = new TrayPopupView(model, OpenEditor, OpenSettings, ExitApplication, () => _trayPopup?.Hide());
 
         _taskbarIcon = new TaskbarIcon
         {
@@ -330,6 +330,12 @@ public partial class App : Application
 
         _editorWindow.Activate();
         NativeWindow.BringToForeground(WindowNative.GetWindowHandle(_editorWindow));
+    }
+
+    private void OpenSettings()
+    {
+        OpenEditor();
+        _editorWindow?.ShowSettings();
     }
 
     /// <summary>
