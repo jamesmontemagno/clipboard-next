@@ -75,9 +75,9 @@
 			productReference = A00000000000000000000007;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A00000000000000000000020 = { isa = XCConfigurationList; buildConfigurations = (A00000000000000000000050, A00000000000000000000051); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
-		A00000000000000000000021 = { isa = XCConfigurationList; buildConfigurations = (A00000000000000000000052, A00000000000000000000053); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
-		A00000000000000000000022 = { isa = XCConfigurationList; buildConfigurations = (A00000000000000000000054, A00000000000000000000055); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A00000000000000000000020 = { isa = XCConfigurationList; buildConfigurations = (A00000000000000000000050, A00000000000000000000051, A00000000000000000000056); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A00000000000000000000021 = { isa = XCConfigurationList; buildConfigurations = (A00000000000000000000052, A00000000000000000000053, A00000000000000000000057); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A00000000000000000000022 = { isa = XCConfigurationList; buildConfigurations = (A00000000000000000000054, A00000000000000000000055, A00000000000000000000058); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 		A00000000000000000000030 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 		A00000000000000000000031 = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 		A00000000000000000000032 = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
@@ -120,6 +120,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 8P95D2238B;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Clipboard Next Debug";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -140,6 +141,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 8P95D2238B;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Clipboard Next";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -179,6 +181,54 @@
 				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks", "@loader_path/../Frameworks");
 			};
 			name = Release;
+		};
+		A00000000000000000000056 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 6.0;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+			};
+			name = MAS;
+		};
+		A00000000000000000000057 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8P95D2238B;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Clipboard Next";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright (c) 2026 Refractored LLC";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks");
+				PRODUCT_BUNDLE_IDENTIFIER = com.refractored.clipboardnext;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				MARKETING_VERSION = 1.0;
+				CURRENT_PROJECT_VERSION = 1;
+			};
+			name = MAS;
+		};
+		A00000000000000000000058 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClipboardNext.app/Contents/MacOS/ClipboardNext";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.refractored.clipboardnext.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks");
+			};
+			name = MAS;
 		};
 	};
 	rootObject = A00000000000000000000001;

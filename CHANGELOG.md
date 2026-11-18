@@ -8,12 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- **macOS:** A separate sandboxed Mac App Store build configuration and Xcode Cloud archive scheme.
 - **macOS and Windows:** A remembered **Theme** setting with **System**, **Light**, and **Dark** choices. Changes apply immediately across the editor, settings, menu/tray popup, and floating badge; **System** follows the operating system's appearance.
 - **Windows:** Open the Settings flyout directly from the tray popup with the gear beside the badge control.
 - **Windows:** Store publishing now creates a GitHub release with release notes and a Store link after package verification, before the Internal Testing and production approvals. Downloads remain Microsoft Store-only.
 
 ### Fixed
 
+- **macOS:** Set the app category to **Developer Tools** so Xcode no longer warns that the target has no category.
 - **macOS and Windows:** Website-only changes no longer trigger the macOS app build; automatic app checks are scoped to their platform's files and build workflow.
 - **macOS and Windows:** Website links include a branded social preview image, complete Open Graph/Twitter metadata, and improved search metadata for the app, privacy policy, and launch trailer.
 - **Windows:** Failed Internal Testing draft deletions now report the HTTP status and redacted Partner Center response instead of hiding the service's rejection reason.

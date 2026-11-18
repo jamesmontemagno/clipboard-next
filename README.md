@@ -98,13 +98,23 @@ The queue is saved atomically to:
 
 It restores without arming the queue or changing the clipboard. Save/load errors are displayed in the editor. A failed load never overwrites the original until you explicitly confirm **Save Current Queue**. Queue text is stored unencrypted on your Mac; avoid storing credentials or secrets. There are no network services, telemetry, or cloud sync.
 
+The Mac App Store build saves its queue and preferences inside its sandbox container. It does not import the queue from the Developer ID build automatically.
+
 ## Releases
+
+The `ClipboardNext` Xcode target sets **Developer Tools** as its macOS app category in all configurations.
 
 Releases follow the tiny-clips pattern. Pushing a tag like `v1.0.0-mac` (or running **Release** via workflow dispatch) triggers [`.github/workflows/release.yml`](.github/workflows/release.yml). It runs the tests, archives a universal build, signs it with Developer ID, notarizes and staples it, and publishes `ClipboardNext-v1.0.0-mac.zip` to GitHub Releases. It then opens a PR that updates the version and SHA-256 in [`Casks/clipboard-next.rb`](Casks/clipboard-next.rb). This repo is its own Homebrew tap. Merge that PR before announcing; until the first release, the cask's SHA is a placeholder.
 
 Required repository secrets: `APPLE_MACOS_DIRECT_CERTIFICATE_P12` (base64-encoded Developer ID Application `.p12`), `APPLE_MACOS_DIRECT_CERTIFICATE_PASSWORD`, `APPLE_REFRACTORED_KEY_ID`, `APPLE_REFRACTORED_ISSUER_ID`, and `APPLE_REFRACTORED_P8_KEY` (the App Store Connect API private key). The workflow generates a temporary keychain password; the Apple team ID is already configured in the Xcode project. The installer certificate secrets are not needed because the release is a ZIP containing the signed app, not a `.pkg`. Allow GitHub Actions to create pull requests in repository settings.
 
 [`.github/workflows/build.yml`](.github/workflows/build.yml) builds and tests every push and PR that touches the macOS app (ad-hoc signed, no secrets).
+
+### Mac App Store (Xcode Cloud)
+
+In App Store Connect, use the app record for `com.refractored.clipboardnext`. Set the Xcode Cloud macOS **Archive** action to the shared **ClipboardNext-MAS** scheme and **Deployment Preparation** to **TestFlight and App Store**. The scheme archives the `MAS` configuration, which uses automatic signing and App Sandbox with read-only access to files chosen in **Open File…**. Keep the existing **ClipboardNext** scheme for the Developer ID release.
+
+Before submitting, install the Cloud build from TestFlight and verify optional Command-V paste detection, Markdown and plain-text file import, queue persistence after relaunch, and **Start with Mac**.
 
 ## Windows
 
